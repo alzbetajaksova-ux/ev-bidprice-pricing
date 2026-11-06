@@ -1,0 +1,32 @@
+# Spoločné parametre modelu. Experimenty E1-E4 ich dopĺňajú o n_slots, n_steps a lambda.
+
+model:
+  capacity: 3            # počet nabíjačiek
+  budget_mean: 1.0       # rozpočet za hodinu, Tab. 1
+  budget_std: 0.5
+  duration_mean_h: 3.0   # priemer Exp, Tab. 1
+  start_mean_h: 12.0     # začiatok rezervácie, Tab. 1
+  start_std_h: 3.0
+
+# Mriežka A: sadzba = F^-1(q), kde F je rozdelenie rozpočtu. Článok mriežku neuvádza,
+# flat sadzby z Tab. 2 sú však presne F^-1(0,35) a F^-1(0,40). Krok 0,05 je náš predpoklad.
+# Pri rozpočte N(1; 0,5) vznikne 0,178; 0,359; 0,482; 0,579; 0,663; 0,738; 0,807; 0,873; 0,937;
+# 1,000; 1,063; 1,127; 1,193; 1,262; 1,337; 1,421; 1,518; 1,641; 1,822.
+price_grid:
+  quantile_start: 0.05
+  quantile_stop: 0.95
+  quantile_step: 0.05
+
+discretization:
+  target_relative_error: 0.06   # Err2 / lambda, č. 6.3.2 článku
+
+demand:
+  mc_samples: 1000000    # odhad podielov produktov lambda_p / lambda
+  mc_seed: 20261106
+
+seeds:
+  train: [0, 199]        # vrátane
+  test: [1000, 1099]
+  pilot: [1000, 1029]
+  cma_runs: [0, 9]
+  mcts_offset: 50000     # náhodnosť MCTS = seed inštancie + offset

@@ -1,0 +1,19 @@
+# E4: politika pracuje s nesprávnym modelom, simulácia beží so správnym.
+
+configurations:
+  - {n_slots: 2, n_steps: 48, expected_requests: 9.00}
+  - {n_slots: 3, n_steps: 72, expected_requests: 13.94}
+  - {n_slots: 4, n_steps: 96, expected_requests: 18.98}
+  - {n_slots: 8, n_steps: 192, expected_requests: 36.67}
+  - {n_slots: 12, n_steps: 288, expected_requests: 49.95}
+  - {n_slots: 24, n_steps: 576, expected_requests: 76.28}
+
+scenarios:
+  - {name: nominal}
+  - {name: lambda_0.7, lambda_factor: 0.7}
+  - {name: lambda_1.3, lambda_factor: 1.3}
+  - {name: budget_0.8, budget_mean: 0.8}
+  - {name: budget_1.2, budget_mean: 1.2}
+  # mriežka sa mení v modeli aj simulácii, krok je krok kvantilov
+  - {name: grid_0.10, grid_step: 0.10}
+  - {name: grid_0.025, grid_step: 0.025}

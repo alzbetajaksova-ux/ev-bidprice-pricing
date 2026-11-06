@@ -1,0 +1,9 @@
+# E1: dĺžka slotu. K a lambda sú z Tab. 2 článku; runner a metódy dopĺňa Člen C.
+
+configurations:
+  - {n_slots: 2, n_steps: 48, expected_requests: 9.00}
+  - {n_slots: 3, n_steps: 72, expected_requests: 13.94}
+  - {n_slots: 4, n_steps: 96, expected_requests: 18.98}
+  - {n_slots: 8, n_steps: 192, expected_requests: 36.67}
+  - {n_slots: 12, n_steps: 288, expected_requests: 49.95}
+  - {n_slots: 24, n_steps: 576, expected_requests: 76.28}
