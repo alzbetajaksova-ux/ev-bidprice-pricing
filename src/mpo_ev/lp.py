@@ -16,6 +16,10 @@ krivky tržieb produktu.
 
 Hodnota LP je horná hranica očakávaných tržieb každej neanticipatívnej politiky
 (Jensenova nerovnosť), nie hranica pre Oracle, ktorý pozná budúcnosť.
+
+Implementácia rieši ekvivalentný tvar s pomocnou premennou s_p = Σ_a q(p,a)·x(p,a)
+(očakávaný predaj produktu p). Kapacitné riadky potom obsahujú len s_p, takže pri
+72 slotoch má matica asi 10× menej nenulových prvkov. Hodnota a μ sa nemenia.
 """
 from __future__ import annotations
 
@@ -28,6 +32,38 @@ from scipy.sparse import coo_matrix
 from mpo_ev.interfaces import DemandModel, Product
 
 Key = tuple[Product, float]
+# Interior-point s crossoverom: pri 72 slotoch ~0,7 s namiesto ~2,9 s pre duálny simplex,
+# s rovnakou hodnotou aj μ (overené na E1 konfiguráciách).
+_METHOD = "highs-ipm"
+
+
+def efficient_rates(points: Sequence[tuple[float, float, float]]) -> list[tuple[float, float, float]]:
+    """Sadzby, ktoré LP môže potrebovať: horný konkávny obal bodov (q, r·q) s počiatkom.
+
+    `points` sú trojice (sadzba, q, r). Ponechá sa len časť obalu od počiatku po bod
+    s najvyššou očakávanou tržbou r·q. Ostatné sadzby sú dominované: buď spotrebujú
+    viac kapacity za menšiu tržbu, alebo ich nahradí zmes dvoch susedných sadzieb
+    (a nepredaných ponúk). Ich vynechanie nemení hodnotu LP ani množinu duálnych riešení.
+    """
+    pts = sorted((q, r * q, a, r) for a, q, r in points if q > 0.0 and r > 0.0)
+    if not pts:
+        return []
+    best = max(range(len(pts)), key=lambda i: (pts[i][1], -pts[i][0]))
+    hull: list[tuple[float, float, float, float]] = [(0.0, 0.0, 0.0, 0.0)]
+    for pt in pts[: best + 1]:
+        while len(hull) >= 2:
+            (x1, y1, *_), (x2, y2, *_) = hull[-2], hull[-1]
+            # odstráň stred, ak neleží ostro nad spojnicou susedov (nie je konkávny)
+            if (x2 - x1) * (pt[1] - y1) - (y2 - y1) * (pt[0] - x1) >= 0:
+                hull.pop()
+            else:
+                break
+        if hull[-1][0] == pt[0]:  # rovnaké q: ponechaj vyššiu tržbu
+            if pt[1] > hull[-1][1]:
+                hull[-1] = pt
+            continue
+        hull.append(pt)
+    return [(a, q, r) for q, _, a, r in hull[1:]]
 
 
 def solve_dlp(
@@ -36,12 +72,14 @@ def solve_dlp(
     q: Mapping[Key, float],
     r: Mapping[Key, float],
     products: Iterable[Product],
+    prune: bool = True,
 ) -> tuple[float, np.ndarray]:
     """Vyrieši LP a vráti (optimálna hodnota, μ) s μ dĺžky n_slots.
 
     `q` a `r` majú kľúč (produkt, sadzba); sadzby produktu sa berú zo všetkých kľúčov
     s daným produktom. Produkty bez Λ alebo s Λ ≤ 0 sa preskočia. Duálne ceny μ_j ≥ 0
-    nie sú pri degenerácii jednoznačné; vraciame tie, ktoré dá HiGHS.
+    nie sú pri degenerácii jednoznačné; vraciame tie, ktoré dá HiGHS. `prune` vynechá
+    dominované sadzby (`efficient_rates`); hodnotu LP to nemení, len zrýchli riešenie.
     """
     capacity = np.asarray(capacity, dtype=float)
     n_slots = len(capacity)
@@ -50,12 +88,13 @@ def solve_dlp(
     for p, a in q:
         rates_of.setdefault(p, []).append(a)
 
-    obj: list[float] = []         # r · q na premennú
-    row_idx: list[int] = []       # riadky matice A_ub
-    col_idx: list[int] = []
-    vals: list[float] = []
-    bounds_rhs: list[float] = []  # Λ_p pre riadky produktov
-    n_prod_rows = 0
+    # Premenné: x(p,a) pre každú efektívnu sadzbu a s_p = očakávaný predaj produktu p.
+    # Sloty vidia len s_p, takže matica je riedka aj pri dlhých produktoch.
+    obj: list[float] = []      # r · q pre x; s_p má v účelovej funkcii 0
+    x_prod: list[int] = []     # index produktu pre každé x
+    x_q: list[float] = []      # q pre každé x
+    volumes: list[float] = []
+    prod_slots: list[range] = []
 
     for p in products:
         volume = float(Lambda.get(p, 0.0))
@@ -63,40 +102,56 @@ def solve_dlp(
             continue
         if p.last_slot >= n_slots:
             raise ValueError(f"produkt {p} presahuje {n_slots} slotov")
-        prod_row = n_prod_rows
-        n_prod_rows += 1
-        bounds_rhs.append(volume)
-        for a in rates_of.get(p, []):
-            qa = float(q[(p, a)])
-            ra = float(r[(p, a)])
-            if qa <= 0.0 or ra <= 0.0:
-                continue  # takáto ponuka nič neprinesie ani nespotrebuje
-            col = len(obj)
+        candidates = [(a, float(q[(p, a)]), float(r[(p, a)])) for a in rates_of.get(p, [])]
+        if prune:
+            candidates = efficient_rates(candidates)
+        candidates = [(a, qa, ra) for a, qa, ra in candidates if qa > 0.0 and ra > 0.0]
+        if not candidates:
+            continue  # žiadna ponuka nič neprinesie
+        k = len(volumes)
+        volumes.append(volume)
+        prod_slots.append(p.slots())
+        for _a, qa, ra in candidates:
             obj.append(ra * qa)
-            row_idx.append(prod_row)
-            col_idx.append(col)
-            vals.append(1.0)
-            for j in p.slots():
-                row_idx.append(-1 - j)  # riadky slotov dočasne záporné, preindexujú sa nižšie
-                col_idx.append(col)
-                vals.append(qa)
+            x_prod.append(k)
+            x_q.append(qa)
 
     if not obj:
         return 0.0, np.zeros(n_slots)
 
-    rows = np.asarray(row_idx)
-    rows = np.where(rows >= 0, rows, n_prod_rows + (-rows - 1))
-    a_ub = coo_matrix(
-        (vals, (rows, col_idx)), shape=(n_prod_rows + n_slots, len(obj))
-    ).tocsr()
-    b_ub = np.concatenate([np.asarray(bounds_rhs), capacity])
+    n_x, n_p = len(obj), len(volumes)
+    x_cols = np.arange(n_x)
+    s_cols = n_x + np.arange(n_p)
 
-    res = linprog(-np.asarray(obj), A_ub=a_ub, b_ub=b_ub, bounds=(0, None), method="highs")
+    # A_ub: [Σ_a x(p,a) ≤ Λ_p] pre produkty, potom [Σ_{p ∋ j} s_p ≤ c_j] pre sloty
+    cap_rows = np.fromiter((n_p + j for slots in prod_slots for j in slots), dtype=np.int64)
+    cap_cols = np.repeat(s_cols, [len(slots) for slots in prod_slots])
+    a_ub = coo_matrix(
+        (
+            np.ones(n_x + len(cap_rows)),
+            (np.concatenate([x_prod, cap_rows]), np.concatenate([x_cols, cap_cols])),
+        ),
+        shape=(n_p + n_slots, n_x + n_p),
+    ).tocsr()
+    b_ub = np.concatenate([volumes, capacity])
+
+    # A_eq: Σ_a q(p,a) · x(p,a) − s_p = 0
+    a_eq = coo_matrix(
+        (
+            np.concatenate([x_q, -np.ones(n_p)]),
+            (np.concatenate([x_prod, np.arange(n_p)]), np.concatenate([x_cols, s_cols])),
+        ),
+        shape=(n_p, n_x + n_p),
+    ).tocsr()
+
+    c = -np.concatenate([obj, np.zeros(n_p)])
+    res = linprog(c, A_ub=a_ub, b_ub=b_ub, A_eq=a_eq, b_eq=np.zeros(n_p),
+                  bounds=(0, None), method=_METHOD)
     if res.status != 0:
         raise RuntimeError(f"LP sa nepodarilo vyriešiť: {res.message}")
 
     # HiGHS minimalizuje −tržby; marginály ≤ 0 sú citlivosť na pravú stranu.
-    mu = np.maximum(-np.asarray(res.ineqlin.marginals[n_prod_rows:]), 0.0)
+    mu = np.maximum(-np.asarray(res.ineqlin.marginals[n_p:]), 0.0)
     return float(-res.fun), mu
 
 

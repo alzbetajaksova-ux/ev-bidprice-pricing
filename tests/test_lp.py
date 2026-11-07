@@ -5,7 +5,7 @@ import pytest
 from mpo_ev.demand import EmpiricalDemandModel, demand_from_base
 from mpo_ev.instances import load_base, make_config
 from mpo_ev.interfaces import Product
-from mpo_ev.lp import lp_inputs, solve_dlp
+from mpo_ev.lp import efficient_rates, lp_inputs, solve_dlp
 
 P0 = Product(0, 0)
 
@@ -104,3 +104,37 @@ def test_lp_inputs_respects_step_and_gamma():
         assert v1[p] == pytest.approx(expected[p])
         assert v2[p] == pytest.approx(0.5 * expected[p])
     assert len(q) == len(r) == len(products) * len(config.price_grid)
+
+
+def test_efficient_rates_drops_dominated():
+    # (sadzba, q, r): r·q = 0,9 / 1,2 / 1,0 / 0,5. Sadzba 1 je pod spojnicou počiatku
+    # a sadzby 2 (0,9 < 0,9·1,2/0,6 = 1,8), sadzba 4 má vyššie q aj nižšiu tržbu než 2.
+    points = [(1.0, 0.9, 1.0), (2.0, 0.6, 2.0), (3.0, 0.25, 4.0), (4.0, 0.95, 0.5 / 0.95)]
+    kept = [a for a, _, _ in efficient_rates(points)]
+    assert kept == [3.0, 2.0]
+
+
+def test_efficient_rates_handles_empty_and_zero_prob():
+    assert efficient_rates([]) == []
+    assert efficient_rates([(1.0, 0.0, 1.0)]) == []
+
+
+@pytest.mark.parametrize("n_slots,n_steps,lam", [(4, 96, 18.98), (12, 288, 49.95)])
+def test_pruning_keeps_value_and_valid_mu(n_slots, n_steps, lam):
+    base = load_base()
+    config = make_config(n_slots, n_steps, lam, base)
+    demand = EmpiricalDemandModel(config, samples=50_000)
+    inputs = lp_inputs(demand, config.price_grid)
+    capacity = np.array([3.0, 1.0, 2.0] * (n_slots // 3) + [3.0] * (n_slots % 3))
+    full, mu_full = solve_dlp(capacity, *inputs, prune=False)
+    pruned, mu_pruned = solve_dlp(capacity, *inputs, prune=True)
+    assert pruned == pytest.approx(full, rel=1e-9)
+    # μ môžu byť pri degenerácii rôzne; oba musia spĺňať silnú dualitu
+    volumes, q, r, products = inputs
+    for mu in (mu_full, mu_pruned):
+        dual = capacity @ mu + sum(
+            volumes[p] * max(0.0, max(q[(p, a)] * (r[(p, a)] - mu[list(p.slots())].sum())
+                                      for a in config.price_grid))
+            for p in products
+        )
+        assert dual == pytest.approx(full, rel=1e-6)
