@@ -1,0 +1,6 @@
+# Ladenie θ bid-price politiky (tuning.py, Člen B), spúšťa run_experiments.py --tune.
+# Hodnoty podľa návodu Člena B: 10 behov CMA-ES (seedy 0-9), 100 vyhodnotení, 200 tréningových inštancií.
+slots: [2, 3, 4, 8, 12, 24]
+runs: 10
+budget: 100
+n_train: 200

@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-07T16:38:53",
+  "experiments": [
+    "e1",
+    "e2",
+    "e4",
+    "mcts_grid"
+  ],
+  "durations_s": {
+    "e1": 858.7,
+    "e2": 2490.4,
+    "e4": 1462.4,
+    "mcts_grid": 1949.1
+  },
+  "settings": {
+    "jobs": "4",
+    "quick": "False",
+    "out_dir": "C:\\Users\\Martin Novy\\Documents\\SKOLA\\MPO\\Zadanie 1\\ev-bidprice-pricing\\results",
+    "resume": "True"
+  },
+  "python": "3.11.15",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "mcts": {
+    "mcts": {
+      "n_iter": 3000,
+      "depth": 8,
+      "c": 10.0
+    },
+    "hybrid_mcts": {
+      "n_iter": 3000,
+      "depth": 3,
+      "c": 1.0
+    }
+  },
+  "seeds": {
+    "train": [
+      0,
+      199
+    ],
+    "test": [
+      1000,
+      1099
+    ],
+    "pilot": [
+      1000,
+      1029
+    ],
+    "cma_runs": [
+      0,
+      9
+    ],
+    "mcts_offset": 50000
+  },
+  "git": "5c5ac424ef8db914d17d439675e6efbbf845176d-dirty",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "pandas": "3.1.1",
+    "cma": "4.5.0",
+    "matplotlib": "3.11.2",
+    "pyyaml": "6.0.3"
+  }
+}

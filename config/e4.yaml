@@ -17,3 +17,8 @@ scenarios:
   # mriežka sa mení v modeli aj simulácii, krok je krok kvantilov
   - {name: grid_0.10, grid_step: 0.10}
   - {name: grid_0.025, grid_step: 0.025}
+
+# Metódy a rozsah (Člen C). bidprice_tuned používa θ z nominálneho ladenia, ak existuje.
+methods: [flat, bidprice, bidprice_tuned, mcts, hybrid_mcts]
+mcts_max_slots: 24
+mcts_test_instances: 30

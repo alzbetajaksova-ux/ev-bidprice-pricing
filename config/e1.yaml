@@ -1,4 +1,4 @@
-# E1: dĺžka slotu. K a lambda sú z Tab. 2 článku; runner a metódy dopĺňa Člen C.
+# E1: dĺžka slotu (Tab. 2 článku). K a lambda sú z Tab. 2; metódy a rozsah dopĺňa Člen C.
 
 configurations:
   - {n_slots: 2, n_steps: 48, expected_requests: 9.00}
@@ -7,3 +7,13 @@ configurations:
   - {n_slots: 8, n_steps: 192, expected_requests: 36.67}
   - {n_slots: 12, n_steps: 288, expected_requests: 49.95}
   - {n_slots: 24, n_steps: 576, expected_requests: 76.28}
+  # 36 a 72 slotov len pre rýchle metódy (flat, bid-price, Oracle, LP): MCTS by v Pythone
+  # potreboval minúty na epizódu (článok: 94 s a 450 s v Julii), VI nad 8 slotov nestačí pamäť
+  - {n_slots: 36, n_steps: 864, expected_requests: 92.86}
+  - {n_slots: 72, n_steps: 1728, expected_requests: 123.96}
+
+# oracle a LP hranica nie sú politiky, runner ich počíta vždy
+methods: [flat, vi, bidprice, bidprice_tuned, mcts, hybrid_mcts]
+vi_max_slots: 8          # článok: VI len do 4 slotov; naša VI bez produktu v stave zvládne 8
+mcts_max_slots: 24       # znížený rozsah schválený vyučujúcim (Python je pomalší než Julia)
+mcts_test_instances: 100 # počet testovacích inštancií pre MCTS a hybrid (prvé z test seedov)

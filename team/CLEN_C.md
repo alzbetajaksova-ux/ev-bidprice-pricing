@@ -96,3 +96,14 @@ Ide o dočasnú kontrolu Člena A, VI je stále tvoja úloha a validácia pre M1
 - `results/e4_flat.csv`, `results/e4_flat_summary.csv`: E4 pre flat rate. `drop_pct` je pokles tržieb oproti nominálu, `se_pct` jeho štandardná chyba z párových rozdielov.
 
 Flat rate na E4: chyba λ ho takmer nezasiahne, chybný priemer rozpočtu dá pokles až 7,7 %. Žiadne zlepšenie nepresahuje dve štandardné chyby. Výsledky treba po M2 vygenerovať znova z finálnej verzie kódu a doplniť o bid-price a MCTS.
+
+## Odovzdané Členom C (7. 11. 2026, vetva `clen-c`)
+
+- **3.6 VI** (`policies/vi.py`): V₀ = 40,97 / 36,32 / 36,17 pri 2 / 3 / 4 slotoch, presná zhoda s dočasnou DP Člena A, simulácia v rámci 2 SE. Validácia M1 hotová. Ukladá len W_t(c), takže beží aj pri 8 slotoch (V₀ = 36,45, asi 50 s).
+- **3.7 MCTS** (`policies/mcts.py`) a **hybrid** (`policies/hybrid_mcts.py`, μ raz pri `reset`).
+- **3.8 Grid search** (`run_experiments.py mcts_grid`, nie E3 – E3 je ladenie Člena B) na `make_config(12, 96, 24.0)`, 30 tréningových inštancií, mriežka z návodu doplnená o 10, 30, 300 a 3000 iterácií; zvolené 3000 iterácií, MCTS d_max = 8, c = 10, hybrid d_max = 3, c = 1 (`config/mcts.yaml`).
+- **5.1 Runner** `run_experiments.py` (`--config`, register metód, paralelne, pokračovanie po páde, verzie knižníc a git hash v `run_meta.json`), **5.2 E1** vrátane 36 a 72 slotov pre rýchle metódy, **5.3 E2** (10 úrovní λ), **5.6–5.7** `src/mpo_ev/analysis.py` + `analysis.ipynb` (Wilcoxon s Holmovou korekciou, pomery k Oracle, LP a flat, tabuľka online/offline časov), `requirements.txt`.
+- **VI pre pilot** (úloha 5): `results/pilot_4s_vi.csv`, VI, flat a Oracle na 4 slotoch, inštancie 1000–1029.
+- Report: `report/nejasnosti_2_4.md`, `sekcia4_metoda_autorov.md`, `sekcia7_metodologia.md`, `sekcia8_vysledky.md`, `sekcia9_porovnanie.md`, `obhajoba_C.md`.
+- **Pre Člena B:** v `results/params/` chýbajú naladené θ, `bidprice_tuned` sa preto zatiaľ vynecháva. Jedno vyhodnotenie F(θ) na 200 inštanciách trvá pri 24 slotoch asi 4,5 min, plný plán (10 × 100) by tam trval asi 76 CPU-hodín, treba znížiť rozpočet alebo počet inštancií. Po vzniku súborov stačí `python run_experiments.py e1 e2 e4`.
+- **Pre Člena A:** E4 je teraz pre flat, bid-price, MCTS a hybrid v `results/e4.csv` a `e4_summary.csv` (staršie `e4_flat*.csv` ostávajú).

@@ -1,0 +1,11 @@
+# Parametre MCTS a hybridu pre E1, E2 a E4, vybrané grid searchom (úloha 3.8,
+# config/mcts_grid.yaml, results/mcts_grid_summary.csv) na tréningových inštanciách.
+#
+# Pravidlo: tržby sa od ~1000 iterácií ustália (priemer cez d_max a c: 25,7 pri 1000,
+# 25,6 pri 3000, 26,0 pri 10 000), 10 000 iterácií pridá ~0,4 (v rámci šumu, SE ~1,4) za
+# trojnásobný čas. Volíme 3000 a pri nich d_max a c s najvyššími tržbami. Rozpor v článku
+# (č. 5.2.1: 800, 3, 1 vs. č. 6.3.1: 10 000, 10, 3) tak v našom modeli nerozhoduje o výsledku.
+# MCTS a hybrid majú rovnaký počet iterácií (kontrolný zoznam férovosti).
+
+mcts: {n_iter: 3000, depth: 8, c: 10.0}
+hybrid_mcts: {n_iter: 3000, depth: 3, c: 1.0}

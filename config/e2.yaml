@@ -1,0 +1,8 @@
+# E2: rastúci dopyt pri 24 slotoch (Obr. 10 článku, č. 6.3.3).
+# K sa počíta z lambda cez instances.required_steps (Err2 / lambda = 0,06), od 192 po 1920.
+
+n_slots: 24
+expected_requests: [24, 48, 72, 96, 120, 144, 168, 192, 216, 240]
+
+methods: [flat, bidprice, bidprice_tuned, mcts, hybrid_mcts]
+mcts_test_instances: 30  # MCTS pri lambda = 240 trvá desiatky sekúnd na epizódu
