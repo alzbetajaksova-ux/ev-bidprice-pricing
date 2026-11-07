@@ -1,0 +1,14 @@
+{
+  "method": "grid",
+  "run_seed": 0,
+  "best_theta": {
+    "alpha_am": 1.5,
+    "alpha_pm": 0.1,
+    "gamma": 0.7,
+    "resolves_per_day": 0.0
+  },
+  "best_value": 34.798850316375486,
+  "n_evals": 16,
+  "time_s": 8.933939360999943,
+  "config_id": "4s"
+}
