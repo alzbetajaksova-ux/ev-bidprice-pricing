@@ -9,8 +9,9 @@ import yaml
 from scipy.stats import norm
 
 from mpo_ev.interfaces import HORIZON_H, Config, Instance, Product, Request
+from mpo_ev.paths import CONFIG_DIR
 
-BASE_CONFIG = Path(__file__).resolve().parents[2] / "config" / "base.yaml"
+BASE_CONFIG = CONFIG_DIR / "base.yaml"
 
 
 def load_base(path: Path = BASE_CONFIG) -> dict:
@@ -76,7 +77,7 @@ def seed_range(base: dict, name: str) -> range:
 def sessions_to_slots(
     start_h: np.ndarray, duration_h: np.ndarray, n_slots: int
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Prevedie nabíjania na prvý a posledný zasiahnutý slot (pravidlo 4 v CLAUDE.md).
+    """Prevedie nabíjania na prvý a posledný zasiahnutý slot (rozhodnutie 4 v report/sekcia3_podklady.md).
 
     Začiatok pred 0:00 sa posunie na 0:00, nabíjanie po polnoci sa oreže na posledný slot.
     """

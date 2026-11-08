@@ -38,25 +38,24 @@ import yaml
 
 from mpo_ev.bounds import gap_to_bound, lp_upper_bound
 from mpo_ev.demand import demand_from_base
+from mpo_ev.evaluation import (
+    Scenario,
+    believed_config,
+    drop_table,
+    evaluate_policy,
+    save_rows,
+    true_config,
+)
 from mpo_ev.instances import generate_instances, load_base, make_config, required_steps, seed_range
 from mpo_ev.interfaces import Config, DemandModel, Policy
+from mpo_ev.paths import CONFIG_DIR, RESULTS, ROOT
 from mpo_ev.policies.bidprice import BidPricePolicy
 from mpo_ev.policies.flat import FlatRatePolicy
 from mpo_ev.policies.hybrid_mcts import HybridMCTSPolicy
 from mpo_ev.policies.mcts import MCTSPolicy
 from mpo_ev.policies.oracle import evaluate_oracle
 from mpo_ev.policies.vi import ValueIteration, VIPolicy
-from mpo_ev.robustness import (
-    ROOT,
-    Scenario,
-    believed_config,
-    evaluate_policy,
-    save_rows,
-    true_config,
-)
 
-CONFIG_DIR = ROOT / "config"
-RESULTS = ROOT / "results"
 SLOW = {"mcts", "hybrid_mcts"}  # metódy, ktoré sa delia na menšie skupiny inštancií
 USES_THETA = {"bidprice_tuned", "hybrid_mcts"}  # metódy, ktoré čítajú naladené θ Člena B
 CHUNK = 5
@@ -468,9 +467,7 @@ def mcts_grid(base: dict, settings: Settings, spec: dict | None = None) -> pd.Da
 
 
 def e4(base: dict, settings: Settings, spec: dict | None = None) -> pd.DataFrame:
-    """Robustnosť (úloha 5.5 Člena A, robustness.py) rozšírená o bid-price a MCTS."""
-    from mpo_ev.robustness import drop_table
-
+    """Robustnosť (úloha 5.5): politika verí chybnému modelu, simulácia beží so správnym."""
     spec = spec or load_yaml("e4.yaml")
     items = spec["configurations"][:2] if settings.quick else spec["configurations"]
     scenarios = [Scenario(**s) for s in spec["scenarios"]]
@@ -522,7 +519,7 @@ def write_meta(settings: Settings, names: Sequence[str], durations: dict[str, fl
     path = settings.out_dir / "run_meta.json"
     meta = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
     meta.update({
-        "date": datetime.now().isoformat(timespec="seconds"),
+        "date": datetime.now().astimezone().isoformat(timespec="seconds"),
         "git": git_revision(),
         "python": platform.python_version(),
         "platform": platform.platform(),

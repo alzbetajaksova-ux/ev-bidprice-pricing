@@ -91,22 +91,11 @@ def oracle_episode(instance: Instance) -> EpisodeResult:
 def evaluate_oracle(
     instances: Sequence[Instance], base: dict, experiment: str, config_id: str
 ) -> list[dict]:
-    """Riadky v dohodnutom formáte CSV, rovnako ako `robustness.evaluate_policy`."""
-    rows = []
-    for instance in instances:
-        result = oracle_episode(instance)
-        rows.append(
-            {
-                "experiment": experiment,
-                "config_id": config_id,
-                "method": METHOD,
-                "instance_seed": instance.seed,
-                "run_seed": instance.seed + base["seeds"]["mcts_offset"],
-                "revenue": result.revenue,
-                "utilization_h": result.utilization_h,
-                "n_requests": result.n_requests,
-                "n_accepted": result.n_accepted,
-                "runtime_s": result.runtime_s,
-            }
-        )
-    return rows
+    """Riadky v rovnakom formáte CSV ako `evaluation.evaluate_policy`."""
+    from mpo_ev.evaluation import result_row
+
+    offset = base["seeds"]["mcts_offset"]
+    return [
+        result_row(experiment, config_id, METHOD, i.seed, i.seed + offset, oracle_episode(i))
+        for i in instances
+    ]

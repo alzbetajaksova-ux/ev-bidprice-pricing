@@ -21,15 +21,7 @@ pytest
 ruff check .
 ```
 
-Testy trvajú asi 1 minútu.
-
-Flat rate:
-
-```powershell
-$env:PYTHONPATH = "src"
-python -m mpo_ev.flat_baseline   # konfigurácie E1, asi 6 s
-python -m mpo_ev.robustness      # E4, asi 25 s
-```
+Testy (`tests/test_core.py`) overujú len kľúčové vlastnosti: generátor a diskretizáciu, simulátor proti analytickému vzorcu, VI proti simulácii, LP hranicu, Oracle, politiky a tabuľky výsledkov. Trvajú do pol minúty.
 
 Všetky experimenty jedným príkazom (z koreňa repozitára, `PYTHONPATH` netreba):
 
@@ -44,7 +36,7 @@ python run_experiments.py --fresh e1                # prepočítať aj hotové �
 
 Experimenty: `mcts_grid` (úloha 3.8, `config/mcts_grid.yaml`), `e1` (dĺžka slotu), `e2` (hustota dopytu), `e4` (robustnosť). E3 (prínos ladenia) je `python -m mpo_ev.tuning` Člena B. Predvolený počet procesov je počet jadier − 1. Očakávaný čas na 12 jadrách (11 procesov): grid search asi 30 min, E1 asi 15 min, E2 asi 41 min, E4 asi 25 min (spolu asi 2 h); skutočné časy sú v `results/run_meta.json`. Výsledok nezávisí od počtu procesov. Hotové úlohy sa ukladajú do `results/.cache/`, prerušený beh preto po opätovnom spustení pokračuje.
 
-Výstupy: `results/<exp>.csv` (riadok = metóda × inštancia), `results/<exp>_summary.csv` (štatistiky, pomery k Oracle, LP hranici a flat rate), `results/<exp>_bounds.csv` (LP hranica, hodnota VI), `results/<exp>_offline.csv` (offline čas prípravy), `results/run_meta.json` (verzie knižníc, git hash, seedy, parametre MCTS), `results/pilot_4s_vi.csv` (VI pre pilot), `results/tables.md` a `results/figures/*.png`. Tabuľky a grafy vytvorí znova z CSV `python -m mpo_ev.analysis` (s `PYTHONPATH=src`) alebo notebook `analysis.ipynb` (potrebuje navyše `pip install notebook`).
+Výstupy: `results/<exp>.csv` (riadok = metóda × inštancia), `results/<exp>_summary.csv` (štatistiky, pomery k Oracle, LP hranici a flat rate), `results/<exp>_bounds.csv` (LP hranica, hodnota VI), `results/<exp>_offline.csv` (offline čas prípravy), `results/run_meta.json` (verzie knižníc, git hash, seedy, parametre MCTS), `results/tables.md` a `results/figures/*.png`. Tabuľky a grafy vytvorí znova z CSV `python -m mpo_ev.analysis` (s `PYTHONPATH=src`) alebo notebook `analysis.ipynb` (potrebuje navyše `pip install notebook`).
 
 `bidprice_tuned` sa vyhodnotí, len ak existujú naladené parametre `results/params/<config>_cma_seed*.json` (úloha 4.4, `python -m mpo_ev.tuning` alebo `--tune`), inak ho runner vynechá s upozornením.
 
@@ -77,17 +69,16 @@ Inštancie sa neukladajú na disk, rovnaká konfigurácia a seed dajú vždy rov
 | `src/mpo_ev/demand.py` | model dopytu pre politiky |
 | `src/mpo_ev/simulator.py` | simulácia jednej epizódy |
 | `src/mpo_ev/bounds.py` | LP horná hranica, vyžaduje `lp.py` |
-| `src/mpo_ev/robustness.py` | experiment E4 |
-| `src/mpo_ev/flat_baseline.py` | flat rate na konfiguráciách E1 |
+| `src/mpo_ev/evaluation.py` | riadky výsledkov (CSV), scenáre chybného modelu a pokles tržieb pre E4 |
+| `src/mpo_ev/paths.py` | cesty k `config/` a `results/` |
 | `src/mpo_ev/lp.py`, `tuning.py` | LP a duálne ceny, ladenie θ cez CMA-ES |
 | `src/mpo_ev/experiments.py` | runner experimentov (register metód, paralelne, pokračovanie po páde); `run_experiments.py` ho spúšťa |
 | `src/mpo_ev/analysis.py`, `analysis.ipynb` | štatistiky (Wilcoxon s Holmovou korekciou), tabuľky a grafy z `results/` |
 | `src/mpo_ev/policies/` | flat, bid-price, Oracle, VI, MCTS, hybrid MCTS |
 | `requirements.txt` | závislosti s presnými verziami |
-| `tests/` | automatické testy |
+| `tests/test_core.py` | základné automatické testy |
 | `results/` | výsledky experimentov |
-| `report/` | podklady pre report |
-| `team/` | doplnky k návodom pre členov tímu |
+| `report/` | podklady pre report a prípravu na obhajobu |
 
 ## Použitie AI a knižníc
 

@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import wilcoxon
 
-from mpo_ev.robustness import ROOT
+from mpo_ev.paths import RESULTS
 
 # Pevné priradenie farby metóde (farba patrí metóde, nie poradiu), plus značka.
 STYLE = {
@@ -173,14 +173,6 @@ def time_table(summary: pd.DataFrame, offline: pd.DataFrame | None) -> pd.DataFr
     table["_o"] = table["method"].map(order)
     table["_s"] = table["config_id"].map(_slots)
     return table.sort_values(["_s", "_o"]).drop(columns=["_o", "_s"])
-
-
-def export_pilot(rows: pd.DataFrame, results: Path) -> None:
-    """VI pre pilot Člena B (úloha 5 návodu C): 4 sloty, inštancie 1000–1029."""
-    pilot = rows[(rows["config_id"] == "4s") & rows["method"].isin(["vi", "flat", "oracle"])
-                 & rows["instance_seed"].between(1000, 1029)]
-    if not pilot.empty:
-        pilot.to_csv(results / "pilot_4s_vi.csv", index=False)
 
 
 def plot_e1(summary: pd.DataFrame, out: Path) -> None:
@@ -425,7 +417,7 @@ def _read(path: Path) -> pd.DataFrame | None:
     return pd.read_csv(path) if path.exists() else None
 
 
-def analyze(results: Path = ROOT / "results") -> Path:
+def analyze(results: Path = RESULTS) -> Path:
     out = results / "figures"
     out.mkdir(parents=True, exist_ok=True)
     sections = ["# Tabuľky z experimentov\n",
@@ -443,7 +435,6 @@ def analyze(results: Path = ROOT / "results") -> Path:
         plot_e1(summary, out)
         for cid in ("4s", "24s"):
             plot_distribution(rows, cid, out)
-        export_pilot(rows, results)
 
     summary, rows = _read(results / "e2_summary.csv"), _read(results / "e2.csv")
     if summary is not None and rows is not None:
@@ -476,7 +467,7 @@ def analyze(results: Path = ROOT / "results") -> Path:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Tabuľky a grafy z results/")
-    parser.add_argument("--results", type=Path, default=ROOT / "results")
+    parser.add_argument("--results", type=Path, default=RESULTS)
     args = parser.parse_args()
     print(f"zapísané: {analyze(args.results)}")
 

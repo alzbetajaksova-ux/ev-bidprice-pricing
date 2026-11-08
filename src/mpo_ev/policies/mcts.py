@@ -13,7 +13,7 @@ ponuku. Prázdne kroky, nepredajné produkty a produkty bez kapacity simulátor 
 bez ponuky, preto ich preskakujeme (rozhodnutie Člena C; článok to explicitne neuvádza,
 v POMDPs.jl by prázdne kroky tvorili ďalšie úrovne stromu len s jedinou akciou).
 
-Čas do ďalšej požiadavky (team/CLEN_C.md, 3.7):
+Čas do ďalšej požiadavky:
 1. p0 = Σ demand.product_probs(0) je pravdepodobnosť príchodu v kroku,
 2. ďalší príchod je o Geom(p0) krokov,
 3. produkt sa vyberie úmerne pravdepodobnostiam z kroku 0; ak už v danom kroku nie je

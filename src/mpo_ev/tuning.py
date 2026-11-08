@@ -45,8 +45,8 @@ import yaml
 from mpo_ev.demand import demand_from_base
 from mpo_ev.instances import generate_instances, load_base, make_config, seed_range
 from mpo_ev.interfaces import Config, DemandModel, Instance
+from mpo_ev.paths import CONFIG_DIR, RESULTS
 from mpo_ev.policies.bidprice import BidPricePolicy
-from mpo_ev.robustness import ROOT
 from mpo_ev.simulator import run_episode
 
 NAMES = ("alpha_am", "alpha_pm", "gamma", "resolves_per_day")
@@ -226,10 +226,6 @@ def save_result(result: TuningResult, config_id: str, out_dir: Path) -> Path:
     return path
 
 
-def load_theta(path: Path) -> dict[str, float]:
-    return json.loads(Path(path).read_text(encoding="utf-8"))["best_theta"]
-
-
 def save_history(results: Sequence[TuningResult], config_id: str, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", newline="", encoding="utf-8") as file:
@@ -252,7 +248,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     args = parser.parse_args(argv)
 
     base = load_base()
-    with open(ROOT / "config" / "e1.yaml", encoding="utf-8") as file:
+    with open(CONFIG_DIR / "e1.yaml", encoding="utf-8") as file:
         items = yaml.safe_load(file)["configurations"]
     item = next(c for c in items if c["n_slots"] == args.slots)
     config = make_config(item["n_slots"], item["n_steps"], item["expected_requests"], base)
@@ -268,7 +264,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         for seed in cma_seeds:
             result = tune_cma(evaluate, args.budget, seed)
             results.append(result)
-            save_result(result, config_id, ROOT / "results" / "params")
+            save_result(result, config_id, RESULTS / "params")
             print(f"  cma seed {seed}: {result.best_value:.3f}  θ = "
                   + ", ".join(f"{k}={v:.3g}" for k, v in result.best_theta.items())
                   + f"  ({result.time_s:.0f} s)", flush=True)
@@ -276,13 +272,13 @@ def main(argv: Sequence[str] | None = None) -> None:
             for seed in cma_seeds:
                 rnd = tune_random(evaluate, args.budget, seed)
                 results.append(rnd)
-                save_result(rnd, config_id, ROOT / "results" / "params")
+                save_result(rnd, config_id, RESULTS / "params")
                 print(f"  random seed {seed}: {rnd.best_value:.3f}", flush=True)
             grid = tune_grid(evaluate, args.budget)
             results.append(grid)
-            save_result(grid, config_id, ROOT / "results" / "params")
+            save_result(grid, config_id, RESULTS / "params")
             print(f"  grid ({grid.n_evals} bodov): {grid.best_value:.3f}")
-        save_history(results, config_id, ROOT / "results" / f"tuning_{config_id}.csv")
+        save_history(results, config_id, RESULTS / f"tuning_{config_id}.csv")
     finally:
         evaluate.close()
 

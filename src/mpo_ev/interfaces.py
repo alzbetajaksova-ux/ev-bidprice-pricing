@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import itertools
 import math
-from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -111,11 +110,6 @@ class Policy(Protocol):
 
     def reset(self, config: Config, demand: DemandModel, seed: int) -> None: ...
     def price(self, state: State) -> float: ...  # sadzba z price_grid alebo REJECT
-
-
-class TrainablePolicy(Policy, Protocol):
-    # Politika s offline tréningom; runner volá fit len na tréningových inštanciách.
-    def fit(self, train_instances: Sequence[Instance], demand: DemandModel) -> None: ...
 
 
 @dataclass
