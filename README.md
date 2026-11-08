@@ -82,4 +82,10 @@ Inštancie sa neukladajú na disk, rovnaká konfigurácia a seed dajú vždy rov
 
 ## Použitie AI a knižníc
 
-Pri návrhu, kóde, testoch a podkladoch reportu sme použili nástroj Claude (Anthropic) \[doplniť rozsah za každého člena\]. Člen C: s pomocou Claude vznikli VI, MCTS, hybrid MCTS, runner experimentov, analýza, testy k nim a koncepty sekcií 7–9 a zoznamu nejasností. Výstupy sme kontrolovali a upravovali. Knižnice: NumPy, SciPy (LP a MILP cez HiGHS), cma, PyYAML, pandas, Matplotlib, pytest, ruff.
+Pri návrhu, kóde, testoch a podkladoch reportu sme použili nástroj Claude (Anthropic). Rozsah podľa členov:
+
+- **Člen A:** s pomocou Claude vznikli spoločné rozhrania (`interfaces.py`), generátor inštancií a diskretizácia (`instances.py`), model dopytu (`demand.py`), simulátor (`simulator.py`), LP horná hranica (`bounds.py`), flat rate (`policies/flat.py`), vyhodnotenie a test robustnosti E4 (`evaluation.py`), konfigurácie `base.yaml`, `e1.yaml`, `e2.yaml`, `e4.yaml`, testy k týmto modulom, tento README a koncepty sekcií 2, 3 a 11 reportu a prípravy na obhajobu. Claude slúžil aj na vysvetlenie kódu a kontrolu modelu voči článku. Rozhodnutia o modeli (pravidlá predaja, mriežka sadzieb, dĺžka rezervácie, voľba K a λ) a ich overenie voči Tab. 2 článku robil Člen A.
+- **Člen B:** s pomocou Claude vznikli deterministický LP a duálne ceny slotov (`lp.py`), bid-price politika (`policies/bidprice.py`), Oracle ako binárny celočíselný program (`policies/oracle.py`), ladenie θ cez CMA-ES (`tuning.py`, `config/tuning.yaml`) a koncept sekcie 5 reportu. Ladenie θ spustil a jeho výstupy vyhodnotil Člen B.
+- **Člen C:** s pomocou Claude vznikli VI, MCTS, hybrid MCTS, runner experimentov, analýza, testy k nim a koncepty sekcií 4, 7–9 a zoznamu nejasností.
+
+Zjednotenie vetiev `clen-a`, `clen-b` a `clen-c` do `main` a zjednodušenie kódu pri ňom urobil Claude na pokyn tímu. Všetky výstupy sme kontrolovali, upravovali a overili testami a vlastnými behmi; zodpovednosť za ne nesie tím. Knižnice: NumPy, SciPy (LP a MILP cez HiGHS), cma, PyYAML, pandas, Matplotlib, pytest, ruff.
