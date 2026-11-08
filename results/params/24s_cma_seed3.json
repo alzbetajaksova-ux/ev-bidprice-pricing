@@ -1,0 +1,14 @@
+{
+  "method": "cma",
+  "run_seed": 3,
+  "best_theta": {
+    "alpha_am": 1.0000087585957385,
+    "alpha_pm": 0.9278077904336349,
+    "gamma": 1.1478293013952596,
+    "resolves_per_day": 6.865073741458888
+  },
+  "best_value": 36.92805154444467,
+  "n_evals": 60,
+  "time_s": 453.366584884001,
+  "config_id": "24s"
+}

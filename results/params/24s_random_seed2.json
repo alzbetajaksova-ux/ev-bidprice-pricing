@@ -1,0 +1,14 @@
+{
+  "method": "random",
+  "run_seed": 2,
+  "best_theta": {
+    "alpha_am": 0.7394081703669648,
+    "alpha_pm": 1.0361670619702426,
+    "gamma": 2.3259902685798606,
+    "resolves_per_day": 83.22940449998883
+  },
+  "best_value": 37.47087379905423,
+  "n_evals": 60,
+  "time_s": 679.9187401790005,
+  "config_id": "24s"
+}
