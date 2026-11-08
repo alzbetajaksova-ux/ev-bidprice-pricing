@@ -6,31 +6,31 @@ Absolútne tržby s článkom porovnať nemožno: rozdelenia z Tab. 1 (dĺžka r
 
 **Tabuľka 9.1.** Pomer priemerných tržieb k Oracle, 100 testovacích inštancií. Článok: Tab. 2 (Oracle len pre 4 a viac slotov).
 
-| Sloty | Dĺžka slotu | Flat, článok | Flat, my | MCTS, článok | MCTS, my | VI, článok | VI, my | Bid-price, my |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2 | 12 h | – | 0,626 | – | 0,610 | – | 0,633 | 0,609 |
-| 3 | 8 h | – | 0,612 | – | 0,638 | – | 0,638 | 0,615 |
-| 4 | 6 h | 0,583 | 0,600 | 0,653 | 0,631 | 0,685 | 0,653 | 0,625 |
-| 8 | 3 h | 0,596 | 0,615 | 0,680 | 0,615 | – | 0,661 | 0,627 |
-| 12 | 2 h | 0,641 | 0,595 | 0,689 | 0,625 | – | – | 0,641 |
-| 24 | 1 h | 0,665 | 0,588 | 0,702 | 0,600 | – | – | 0,618 |
-| 36 | 40 min | 0,689 | 0,587 | 0,720 | – | – | – | 0,617 |
-| 72 | 20 min | 0,709 | 0,568 | 0,745 | – | – | – | 0,595 |
+| Sloty | Dĺžka slotu | Flat, článok | Flat, my | MCTS, článok | MCTS, my | VI, článok | VI, my | Bid-price, my | Bid-price (CMA-ES), my |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2 | 12 h | – | 0,626 | – | 0,610 | – | 0,633 | 0,609 | 0,609 |
+| 3 | 8 h | – | 0,612 | – | 0,638 | – | 0,638 | 0,615 | 0,642 |
+| 4 | 6 h | 0,583 | 0,600 | 0,653 | 0,631 | 0,685 | 0,653 | 0,625 | 0,653 |
+| 8 | 3 h | 0,596 | 0,615 | 0,680 | 0,615 | – | 0,661 | 0,627 | 0,658 |
+| 12 | 2 h | 0,641 | 0,595 | 0,689 | 0,625 | – | – | 0,641 | 0,664 |
+| 24 | 1 h | 0,665 | 0,588 | 0,702 | 0,600 | – | – | 0,618 | 0,654 |
+| 36 | 40 min | 0,689 | 0,587 | 0,720 | – | – | – | 0,617 | – |
+| 72 | 20 min | 0,709 | 0,568 | 0,745 | – | – | – | 0,595 | – |
 
 **Tabuľka 9.2.** Prínos dynamického oceňovania nad flat rate (relatívne zlepšenie priemeru; p a p_Holm sú z párového Wilcoxonovho testu).
 
-| Sloty | MCTS vs. flat, článok | MCTS vs. flat, my | VI vs. flat, článok | VI vs. flat, my | Bid-price vs. flat, my |
-| --- | --- | --- | --- | --- | --- |
-| 4 | +11,9 % | +5,1 % (p = 0,02; p_Holm = 0,20) | +17,5 % | +8,8 % | +4,2 % |
-| 8 | +13,9 % | +0,1 % | – | +7,5 % | +2,0 % |
-| 12 | +7,5 % | +5,1 % (p = 0,01; p_Holm = 0,14) | – | – | +7,8 % |
-| 24 | +5,7 % | +2,0 % | – | – | +5,1 % |
-| 36 | +4,5 % | – | – | – | +5,2 % |
-| 72 | +5,1 % | – | – | – | +4,7 % |
+| Sloty | MCTS vs. flat, článok | MCTS vs. flat, my | VI vs. flat, článok | VI vs. flat, my | Bid-price vs. flat, my | Bid-price (CMA-ES) vs. flat, my |
+| --- | --- | --- | --- | --- | --- | --- |
+| 4 | +11,9 % | +5,1 % (p = 0,02; p_Holm = 0,27) | +17,5 % | +8,8 % | +4,2 % | +9,0 % |
+| 8 | +13,9 % | +0,1 % | – | +7,5 % | +2,0 % | +7,1 % |
+| 12 | +7,5 % | +5,1 % (p = 0,01; p_Holm = 0,19) | – | – | +7,8 % | +11,7 % |
+| 24 | +5,7 % | +2,0 % | – | – | +5,1 % | +11,2 % |
+| 36 | +4,5 % | – | – | – | +5,2 % | – |
+| 72 | +5,1 % | – | – | – | +4,7 % | – |
 
 ## Čo sa reprodukovalo
 
-- **Poradie Oracle > VI > MCTS ≥ flat.** VI je v našom modeli najlepšia politika všade, kde beží (2–8 slotov), MCTS je medzi VI a flat rate. Pri 4 slotoch je MCTS o 5,1 % nad flat rate (p = 0,02, po Holmovej korekcii 0,20), v článku o 11,9 %. Kritérium z návodu (MCTS ≤ VI a > flat na 4 slotoch) je splnené.
+- **Poradie Oracle > VI > MCTS ≥ flat.** VI je v našom modeli najlepšia politika všade, kde beží (2–8 slotov), MCTS je medzi VI a flat rate. Pri 4 slotoch je MCTS o 5,1 % nad flat rate (p = 0,02, po Holmovej korekcii 0,27), v článku o 11,9 %. Kritérium z návodu (MCTS ≤ VI a > flat na 4 slotoch) je splnené.
 - **Pomer flat/Oracle okolo 0,6** pri 4 a 8 slotoch: máme 0,600 a 0,615, článok 0,583 a 0,596.
 - **Pokles VI medzi 2 a 3 slotmi** (V₀ = 40,97 → 36,32), ktorý je v článku nečakaný (48,18 → 43,88). Nárast pri 4 slotoch (článok 46,23) sa nereprodukoval (36,17).
 - **Grid search MCTS (Obr. 6 a 7 článku).** Rovnako ako autori zisťujeme, že rozhoduje počet iterácií, d_max aj c majú malý vplyv a čas rastie lineárne s počtom iterácií. Tržby na tejto inštancii sú porovnateľné (článok asi 18–23, my 19–27 podľa počtu iterácií).
@@ -44,7 +44,14 @@ Absolútne tržby s článkom porovnať nemožno: rozdelenia z Tab. 1 (dĺžka r
 
 ## Naše riešenie vs. metóda autorov
 
-Pri rovnakých inštanciách a rovnakom vyhodnotení dosahuje bid-price tržby MCTS (rozdiely −1,2 až +1,0 jednotky, po Holmovej korekcii žiadny významný) za asi 1/90 online času. Pri vysokom dopyte (E2) je náhodný rollout MCTS slabý a hybrid s bid-price rolloutom ho prekonáva (λ = 216: +4,0, p_Holm = 0,003). Výskumná otázka „dosiahne rýchla politika tržby MCTS“ má teda kladnú odpoveď, „prekoná ich“ len pri vysokom dopyte. Na 36 a 72 slotoch, kde MCTS v našom rozsahu nebeží, je bid-price o 5 % nad flat rate pri čase do 1,5 s na deň.
+Pri rovnakých inštanciách, rovnakom vyhodnotení a rovnakej mriežke cien:
+
+- **Naladená bid-price prekonáva MCTS autorov** pri 8, 12 a 24 slotoch o 6–9 % (p_Holm < 0,001) a pri vysokom dopyte (E2, λ ≥ 120) o 15–25 % (p_Holm ≤ 0,003). Pri 4 a 8 slotoch sa vyrovná optimálnej VI. Online potrebuje 1,25 s na deň pri 24 slotoch (MCTS 17,5 s) a offline ladenie trvá do 8 minút na jeden beh CMA-ES. Jej pomer k Oracle (0,65–0,66 pri 4–24 slotoch) je blízko hodnotám MCTS v článku (0,65–0,70), hoci náš model ponecháva dynamickému oceňovaniu menej priestoru.
+- **Predvolená bid-price** (bez ladenia a bez prepočtu LP) dosahuje tržby MCTS (rozdiely −1,2 až +1,0, po korekcii nevýznamné) za asi 1/90 online času.
+- **Hybrid MCTS** zlepší MCTS len pri dlhom horizonte (24 slotov: +4,5 %, p_Holm = 0,066) a je pomalší aj horší ako naladená bid-price.
+- **Robustnosť (E4).** Naladená bid-price stráca pri chybnom modeli dopytu najviac 6,4 %, menej ako predvolená bid-price (do 16,6 %) aj MCTS (do 12,1 %).
+
+Výskumná otázka „dosiahne rýchla politika založená na hodnote slotov tržby MCTS alebo vyššie“ má teda kladnú odpoveď: po naladení θ sú tržby vyššie, a to najmä pri jemnom delení dňa a vysokom dopyte, kde MCTS s náhodným rolloutom zlyháva. Ako ďaleko sú metódy od optima, vieme presne len do 8 slotov (VI); LP hranica je voľná (19–27 % nad VI). Na 36 a 72 slotoch, kde MCTS ani naladené θ v našom rozsahu nemáme, je predvolená bid-price o 5 % nad flat rate pri čase do 1,5 s na deň.
 
 ## Možné zdroje rozdielov
 

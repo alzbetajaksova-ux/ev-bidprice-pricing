@@ -32,7 +32,7 @@ Moduly Člena C: `policies/vi.py`, `policies/mcts.py`, `policies/hybrid_mcts.py`
 
 ## Hybrid MCTS
 
-**Čím sa líši od MCTS?** Iba rolloutom: namiesto náhodnej sadzby ponúkne bid-price politiku s μ z LP, vypočítanými raz pri reset. Sadzba závisí len od produktu a časti dňa, preto ju predpočítame do tabuľky a rollout je rovnako rýchly.
+**Čím sa líši od MCTS?** Iba rolloutom: namiesto náhodnej sadzby ponúkne bid-price politiku s μ z LP, vypočítanými raz pri reset. Sadzba závisí len od produktu a časti dňa, preto ju predpočítame do tabuľky a rollout je rovnako rýchly. Vo finálnych behoch rollout používa naladené α a γ od Člena B, prepočet LP v rolloute nie je.
 
 **Je porovnanie MCTS a hybridu férové?** Áno: rovnaký počet iterácií, rovnaké inštancie, rovnaký seed politiky, rovnaký strom a UCB. Líši sa len rollout.
 
@@ -54,3 +54,9 @@ Moduly Člena C: `policies/vi.py`, `policies/mcts.py`, `policies/hybrid_mcts.py`
 **Prečo Holmova korekcia?** Testujeme veľa dvojíc metód na viacerých konfiguráciách; bez korekcie by niektorý rozdiel vyšiel náhodou významný. Holm kontroluje pravdepodobnosť aspoň jedného falošného objavu a je menej konzervatívny ako Bonferroni.
 
 **Ako runner pokračuje po páde?** Každá úloha (experiment, konfigurácia, metóda, skupina inštancií, parametre) má odtlačok; po dokončení sa uloží do results/.cache. Pri ďalšom behu sa hotové úlohy načítajú, zmena parametrov dá iný odtlačok, takže sa nepoužijú staré výsledky.
+
+**Prečo je naladená bid-price lepšia ako MCTS, keď predvolená nie je?** Naladená verzia prepočítava LP po každom predaji a periodicky počas dňa, takže hodnoty slotov μ zodpovedajú skutočnej zostávajúcej kapacite. Predvolená má μ len z rána. Ladenie α a γ potom koriguje systematické chyby fluidného LP. Samostatný vplyv prepočtu a ladenia sme neoddelili.
+
+**Nie je to nefér, že naladená bid-price mala tréning a MCTS nie?** Ladenie bežalo len na tréningových inštanciách (0–49) a jeho offline čas uvádzame. MCTS má svoje hyperparametre tiež vybrané na tréningových inštanciách (grid search). Testovacie inštancie nevidela žiadna metóda.
+
+**Prečo hybrid s naladeným rolloutom nie je lepší?** Rollout má pevné μ z rána a nevie, ako sa kapacita počas dňa mení; strom MCTS s 3000 iteráciami to nedokáže vyvážiť. Naladená bid-price prepočítava LP priamo, preto je lepšia aj rýchlejšia.

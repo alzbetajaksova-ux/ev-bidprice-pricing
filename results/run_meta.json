@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-07T16:38:53",
+  "date": "2026-11-08T11:27:19",
   "experiments": [
     "e1",
     "e2",
@@ -7,13 +7,13 @@
     "mcts_grid"
   ],
   "durations_s": {
-    "e1": 858.7,
-    "e2": 2490.4,
-    "e4": 1462.4,
+    "e1": 447.4,
+    "e2": 1686.5,
+    "e4": 1111.5,
     "mcts_grid": 1949.1
   },
   "settings": {
-    "jobs": "4",
+    "jobs": "11",
     "quick": "False",
     "out_dir": "C:\\Users\\Martin Novy\\Documents\\SKOLA\\MPO\\Zadanie 1\\ev-bidprice-pricing\\results",
     "resume": "True"
@@ -51,7 +51,7 @@
     ],
     "mcts_offset": 50000
   },
-  "git": "5c5ac424ef8db914d17d439675e6efbbf845176d-dirty",
+  "git": "84e3dad3f98613d0d620434a3efb250a750b6caf-dirty",
   "versions": {
     "numpy": "2.4.6",
     "scipy": "1.17.1",
@@ -59,5 +59,6 @@
     "cma": "4.5.0",
     "matplotlib": "3.11.2",
     "pyyaml": "6.0.3"
-  }
+  },
+  "note": "durations_s je čas posledného behu. Pri prepočte 8. 11. po doplnení θ od Člena B sa z results/.cache načítali hotové úlohy a prepočítali sa len bidprice_tuned a hybrid_mcts; plný beh trval E1 ~859 s, E2 ~2490 s, E4 ~1462 s, mcts_grid ~1949 s (11 procesov)."
 }
