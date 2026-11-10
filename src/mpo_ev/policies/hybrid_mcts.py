@@ -1,4 +1,4 @@
-# Vytvorené s pomocou Claude, upravil: Člen C
+# Vytvorené s pomocou Claude, upravil: Martin Nový (Člen C)
 """Hybrid MCTS: náhodný rollout autorov nahradí bid-price politika (časť 4 návodu, bod 5).
 
 Strom, UCB aj spätné šírenie sú rovnaké ako v `MCTSPolicy`. Iba v rolloute sa namiesto

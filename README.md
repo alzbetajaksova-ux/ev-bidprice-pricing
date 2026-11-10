@@ -34,9 +34,16 @@ python run_experiments.py --tune e1                 # najprv ladenie θ cez CMA-
 python run_experiments.py --fresh e1                # prepočítať aj hotové úlohy
 ```
 
-Experimenty: `mcts_grid` (úloha 3.8, `config/mcts_grid.yaml`), `e1` (dĺžka slotu), `e2` (hustota dopytu), `e4` (robustnosť). E3 (prínos ladenia) je `python -m mpo_ev.tuning`. Predvolený počet procesov je počet jadier − 1. Očakávaný čas na 12 jadrách (11 procesov): grid search asi 30 min, E1 asi 15 min, E2 asi 41 min, E4 asi 25 min (spolu asi 2 h); skutočné časy sú v `results/run_meta.json`. Výsledok nezávisí od počtu procesov. Hotové úlohy sa ukladajú do `results/.cache/`, prerušený beh preto po opätovnom spustení pokračuje.
+Experimenty: `mcts_grid` (úloha 3.8, `config/mcts_grid.yaml`), `e1` (dĺžka slotu), `e2` (hustota dopytu), `e4` (robustnosť). E3 (prínos ladenia θ) sa spúšťa zvlášť pre každý počet slotov, s rozpočtom z `config/tuning.yaml`:
 
-Výstupy: `results/<exp>.csv` (riadok = metóda × inštancia), `results/<exp>_summary.csv` (štatistiky, pomery k Oracle, LP hranici a flat rate), `results/<exp>_bounds.csv` (LP hranica, hodnota VI), `results/<exp>_offline.csv` (offline čas prípravy), `results/run_meta.json` (verzie knižníc, git hash, seedy, parametre MCTS), `results/tables.md` a `results/figures/*.png`. Tabuľky a grafy vytvorí znova z CSV `python -m mpo_ev.analysis` (s `PYTHONPATH=src`) alebo notebook `analysis.ipynb` (potrebuje navyše `pip install notebook`).
+```powershell
+$env:PYTHONPATH = "src"
+python -m mpo_ev.tuning --slots 24 --runs 5 --budget 60 --n-train 50 --jobs 8   # aj pre 2, 3, 4, 8, 12 slotov
+```
+
+Výsledky ladenia sú v `results/params/` a `results/tuning_<s>s.csv`. Ladenie pri 24 slotoch trvá s 8 procesmi asi 1,5 h. Predvolený počet procesov je počet jadier − 1. Očakávaný čas na 12 jadrách (11 procesov): grid search asi 30 min, E1 asi 15 min, E2 asi 41 min, E4 asi 25 min (spolu asi 2 h); skutočné časy sú v `results/run_meta.json`. Výsledok nezávisí od počtu procesov. Hotové úlohy sa ukladajú do `results/.cache/`, prerušený beh preto po opätovnom spustení pokračuje.
+
+Výstupy: `results/<exp>.csv` (riadok = metóda × inštancia), `results/<exp>_summary.csv` (štatistiky, pomery k Oracle, LP hranici a flat rate), `results/<exp>_bounds.csv` (LP hranica, hodnota VI), `results/<exp>_offline.csv` (offline čas prípravy), `results/run_meta.json` (verzie knižníc, git hash, seedy, parametre MCTS), `results/params/*.json` (naladené θ z každého behu ladenia), `results/tuning_<s>s.csv` (priebeh ladenia pre graf konvergencie), `results/tables.md` a `results/figures/*.png`. Tabuľky a grafy vytvorí znova z CSV `python -m mpo_ev.analysis` (s `PYTHONPATH=src`) alebo notebook `analysis.ipynb` (potrebuje navyše `pip install notebook`).
 
 `bidprice_tuned` sa vyhodnotí, len ak existujú naladené parametre `results/params/<config>_cma_seed*.json` (úloha 4.4, `python -m mpo_ev.tuning` alebo `--tune`), inak ho runner vynechá s upozornením.
 
@@ -77,15 +84,18 @@ Inštancie sa neukladajú na disk, rovnaká konfigurácia a seed dajú vždy rov
 | `src/mpo_ev/policies/` | flat, bid-price, Oracle, VI, MCTS, hybrid MCTS |
 | `requirements.txt` | závislosti s presnými verziami |
 | `tests/test_core.py` | základné automatické testy |
-| `results/` | výsledky experimentov |
-| `report/` | podklady pre report a prípravu na obhajobu |
+| `results/` | výsledky experimentov, naladené θ (`params/`), tabuľky a grafy |
+| `MPO_Zadanie1_report.docx` | záverečný report |
+| `report/` | podklady pre report (koncepty sekcií, zoznam nejasností) a prípravu na obhajobu |
 
-## Použitie AI a knižníc
+## Pôvod kódu, použitie AI a knižníc
 
-Pri návrhu, kóde, testoch a podkladoch reportu sme použili nástroj Claude (Anthropic). Rozsah podľa členov:
+**Kód autorov článku sme nepoužili.** Autori svoju implementáciu (Julia, knižnica POMDPs.jl) nezverejnili. Metódy z článku, teda MCTS (Algoritmy 1 a 2), flat rate, Value Iteration a Oracle (rov. 11–12), sme implementovali sami podľa ich opisu v článku; odchýlky od článku sú v `report/nejasnosti_2_4.md` a v kapitole 6 reportu. Model problému (rozdelenia z Tab. 1 článku) a metriky preberáme z článku. Cudzí zdrojový kód okrem uvedených knižníc sme nepoužili.
 
-- **Alžbeta Jakšová:** s pomocou Claude vznikli spoločné rozhrania (`interfaces.py`), generátor inštancií a diskretizácia (`instances.py`), model dopytu (`demand.py`), simulátor (`simulator.py`), LP horná hranica (`bounds.py`), flat rate (`policies/flat.py`), vyhodnotenie a test robustnosti E4 (`evaluation.py`), konfigurácie `base.yaml`, `e1.yaml`, `e2.yaml`, `e4.yaml`, testy k týmto modulom, tento README a koncepty sekcií 2, 3 a 11 reportu a prípravy na obhajobu. Claude slúžil aj na vysvetlenie kódu a kontrolu modelu voči článku. Rozhodnutia o modeli (pravidlá predaja, mriežka sadzieb, dĺžka rezervácie, voľba K a λ) a ich overenie voči Tab. 2 článku robil Člen A.
-- **Adam Paľo:** s pomocou Claude vznikli deterministický LP a duálne ceny slotov (`lp.py`), bid-price politika (`policies/bidprice.py`), Oracle ako binárny celočíselný program (`policies/oracle.py`), ladenie θ cez CMA-ES (`tuning.py`, `config/tuning.yaml`) a koncept sekcie 5 reportu. Ladenie θ spustil a jeho výstupy vyhodnotil Člen B.
-- **Martin Nový:** s pomocou Claude vznikli VI, MCTS, hybrid MCTS, runner experimentov, analýza, testy k nim a koncepty sekcií 4, 7–9 a zoznamu nejasností.
+Pri návrhu, kóde, testoch a podkladoch reportu sme použili nástroj generatívnej AI Claude (Anthropic). Rozsah podľa členov:
 
-Zjednotenie vetiev `clen-a`, `clen-b` a `clen-c` do `main` a zjednodušenie kódu pri ňom urobil Claude na pokyn tímu. Všetky výstupy sme kontrolovali, upravovali a overili testami a vlastnými behmi; zodpovednosť za ne nesie tím. Knižnice: NumPy, SciPy (LP a MILP cez HiGHS), cma, PyYAML, pandas, Matplotlib, pytest, ruff.
+- **Alžbeta Jakšová (Člen A):** s pomocou Claude vznikli spoločné rozhrania (`interfaces.py`), generátor inštancií a diskretizácia (`instances.py`), model dopytu (`demand.py`), simulátor (`simulator.py`), LP horná hranica (`bounds.py`), flat rate (`policies/flat.py`), vyhodnotenie a test robustnosti E4 (`evaluation.py`, pôvodne `robustness.py`), konfigurácia `base.yaml` a pôvodné verzie `e1.yaml` a `e4.yaml`, tento README a koncepty sekcií 2, 3 a 11 reportu a prípravy na obhajobu (`report/obhajoba_A.md`). Claude slúžil aj na vysvetlenie kódu a kontrolu modelu voči článku. Rozhodnutia o modeli (pravidlá predaja, mriežka sadzieb, dĺžka rezervácie, voľba K a λ) a ich overenie voči Tab. 2 článku robil Člen A.
+- **Adam Paľo (Člen B):** s pomocou Claude vznikli deterministický LP a duálne ceny slotov (`lp.py`), bid-price politika (`policies/bidprice.py`), Oracle ako binárny celočíselný program (`policies/oracle.py`), ladenie θ cez CMA-ES (`tuning.py`) a koncept sekcie 5 reportu. Ladenie θ spustil, určil jeho rozpočet (hodnoty v `config/tuning.yaml`) a jeho výstupy (`results/params/`, `results/tuning_*.csv`) vyhodnotil Člen B.
+- **Martin Nový (Člen C):** s pomocou Claude vznikli Value Iteration (`policies/vi.py`), MCTS autorov (`policies/mcts.py`), hybrid MCTS (`policies/hybrid_mcts.py`), runner experimentov (`experiments.py`, `run_experiments.py`), štatistiky, tabuľky a grafy (`analysis.py`, `analysis.ipynb`), `requirements.txt`, konfigurácie `e2.yaml`, `mcts.yaml`, `mcts_grid.yaml` a `tuning.yaml` a rozšírenie `e1.yaml` a `e4.yaml` (ďalšie metódy, 36 a 72 slotov), rozšírenie E4 o bid-price a MCTS, koncepty sekcií 4 a 7–9 reportu, zoznam nejasností (`report/nejasnosti_2_4.md`), doplnky sekcie 11, príprava na obhajobu (`report/obhajoba_C.md`) a oprava finálneho reportu (Príloha A, štatistiky, seedy). Experimenty (grid search MCTS, E1, E2, E4) spustil a výsledky vyhodnotil Člen C.
+
+Pri zjednotení vetiev `clen-a`, `clen-b` a `clen-c` do `main` Claude na pokyn tímu zjednodušil kód a pôvodné testy členov (asi 180 testov v samostatných súboroch) nahradil súborom `tests/test_core.py`, ktorý overuje kľúčové vlastnosti všetkých častí. Výsledky v `results/` sme po zjednotení overili: prepočet E1 pri 4 a 24 slotoch na vetve `main` dal presne rovnaké čísla. Všetky výstupy sme kontrolovali, upravovali a overili testami a vlastnými behmi; zodpovednosť za ne nesie tím. Knižnice: NumPy, SciPy (LP a MILP cez HiGHS), cma, PyYAML, pandas, Matplotlib, pytest, ruff.

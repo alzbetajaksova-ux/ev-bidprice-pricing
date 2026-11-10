@@ -1,3 +1,4 @@
+# Vytvorené s pomocou Claude pri zjednotení vetiev do main, skontroloval: tím
 """Základné testy: overujú len vlastnosti, na ktorých stoja výsledky v reporte."""
 from dataclasses import replace
 from functools import cache

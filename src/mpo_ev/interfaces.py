@@ -1,4 +1,4 @@
-
+# Vytvorené s pomocou Claude, upravil: Alžbeta Jakšová (Člen A)
 """Spoločné dátové triedy a protokoly. Bez dohody tímu sa nemenia."""
 from __future__ import annotations
 

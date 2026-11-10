@@ -1,3 +1,4 @@
+# Vytvorené s pomocou Claude, upravil: Alžbeta Jakšová (Člen A)
 """Mriežka sadzieb, diskretizácia Poissonovho procesu a konfigurácie inštancií."""
 from __future__ import annotations
 

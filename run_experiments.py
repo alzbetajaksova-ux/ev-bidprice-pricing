@@ -1,4 +1,4 @@
-# Vytvorené s pomocou Claude, upravil: Člen C
+# Vytvorené s pomocou Claude, upravil: Martin Nový (Člen C)
 """Jeden príkaz na všetky experimenty (úloha 5.1).
 
     python run_experiments.py                          # grid MCTS, E1, E2, E4 + tabuľky a grafy

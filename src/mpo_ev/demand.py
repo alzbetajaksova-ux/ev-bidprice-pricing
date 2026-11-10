@@ -1,3 +1,4 @@
+# Vytvorené s pomocou Claude, upravil: Alžbeta Jakšová (Člen A)
 """Model dopytu pre LP, VI a MCTS, konzistentný s generátorom inštancií."""
 from __future__ import annotations
 

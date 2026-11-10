@@ -1,3 +1,4 @@
+# Vytvorené s pomocou Claude, upravil: Alžbeta Jakšová (Člen A)
 """Vyhodnotenie politík: riadky CSV, scenáre chybného modelu (E4) a pokles tržieb."""
 from __future__ import annotations
 

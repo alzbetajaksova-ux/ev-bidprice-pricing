@@ -1,4 +1,4 @@
-# Vytvorené s pomocou Claude, upravil: Člen C
+# Vytvorené s pomocou Claude, upravil: Martin Nový (Člen C)
 """Runner experimentov (úloha 5.1). Spúšťa sa cez run_experiments.py v koreni.
 
 Experimenty Člena C: E1 (dĺžka slotu, 5.2), E2 (hustota dopytu, 5.3) a grid search MCTS

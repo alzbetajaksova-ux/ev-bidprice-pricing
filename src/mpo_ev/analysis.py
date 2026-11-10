@@ -1,4 +1,4 @@
-# Vytvorené s pomocou Claude, upravil: Člen C
+# Vytvorené s pomocou Claude, upravil: Martin Nový (Člen C)
 """Tabuľky a grafy z výsledkov E1–E4 (časť „analysis“ v návode, sekcie 8 a 9 reportu).
 
 Spustenie: python -m mpo_ev.analysis (s PYTHONPATH=src); run_experiments.py ju volá

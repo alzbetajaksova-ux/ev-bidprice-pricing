@@ -1,3 +1,4 @@
+# Vytvorené s pomocou Claude, upravil: Alžbeta Jakšová (Člen A)
 """Flat rate: jedna sadzba pre všetky požiadavky, alokácia v poradí príchodu (č. 6.2.1)."""
 from __future__ import annotations
 

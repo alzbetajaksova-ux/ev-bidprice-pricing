@@ -1,4 +1,4 @@
-
+# Vytvorené s pomocou Claude, upravil: Alžbeta Jakšová (Člen A)
 """Simulácia jednej epizódy (jedného dňa požiadaviek)."""
 from __future__ import annotations
 

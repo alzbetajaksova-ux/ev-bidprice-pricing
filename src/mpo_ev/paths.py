@@ -1,3 +1,4 @@
+# Vytvorené s pomocou Claude pri zjednotení vetiev do main, skontroloval: tím
 """Cesty k adresárom projektu."""
 from pathlib import Path
 

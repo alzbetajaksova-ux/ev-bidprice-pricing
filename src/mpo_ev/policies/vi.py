@@ -1,4 +1,4 @@
-# Vytvorené s pomocou Claude, upravil: Člen C
+# Vytvorené s pomocou Claude, upravil: Martin Nový (Člen C)
 """Value Iteration: optimálna politika MDP pre malé inštancie (úloha 3.6, č. 6.2.2 článku).
 
 Konečný horizont, takže VI je jeden prechod spätnej indukcie od kroku K po 0. Namiesto

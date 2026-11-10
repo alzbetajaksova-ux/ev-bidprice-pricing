@@ -1,4 +1,4 @@
-# Vytvorené s pomocou Claude, upravil: Člen C
+# Vytvorené s pomocou Claude, upravil: Martin Nový (Člen C)
 """MCTS autorov článku (úloha 3.7, č. 5, Algoritmy 1 a 2).
 
 UCT: v uzle sa najprv vyskúša každá akcia raz, potom sa vyberá podľa UCB1
