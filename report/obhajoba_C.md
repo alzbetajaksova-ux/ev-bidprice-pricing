@@ -1,8 +1,8 @@
 # Príprava na obhajobu – Člen C
 
-<!-- Vytvorené s pomocou Claude, upravil: Člen C -->
+<!-- Vytvorené s pomocou Claude, upravil: Martin Nový (Člen C) -->
 
-Moduly Člena C: `policies/vi.py`, `policies/mcts.py`, `policies/hybrid_mcts.py`, `experiments.py` + `run_experiments.py`, `analysis.py`, `config/e1–e4.yaml`, `mcts.yaml`, `tuning.yaml`, `requirements.txt`. Testy: `tests/test_vi.py`, `test_mcts.py`, `test_experiments.py`.
+Moduly Člena C: `policies/vi.py`, `policies/mcts.py`, `policies/hybrid_mcts.py`, `experiments.py` + `run_experiments.py`, `analysis.py`, `analysis.ipynb`, `config/e2.yaml`, `mcts.yaml`, `mcts_grid.yaml`, `tuning.yaml`, rozšírenie `e1.yaml` a `e4.yaml`, `requirements.txt`. Pôvodné testy z vetvy `clen-c` nahradil pri zjednotení do `main` súbor `tests/test_core.py` (VI: `test_vi_matches_reference_dp_and_lp_bound`, `test_vi_policy_in_simulator_reaches_value`; runner: `test_runner_rows_and_summary`; politiky: `test_policy_is_valid_and_deterministic`).
 
 ## Value Iteration
 
@@ -20,7 +20,7 @@ Moduly Člena C: `policies/vi.py`, `policies/mcts.py`, `policies/hybrid_mcts.py`
 
 **Prečo strom obsahuje len rozhodovacie stavy?** Prázdny krok, nepredajný produkt alebo produkt bez kapacity nemá rozhodnutie, simulátor ho odmietne sám. Skok na ďalšiu ponuku (geometrický čas, rovnako ako rollout autorov) robí strom užitočnejším: d_max = 3 znamená 3 rozhodnutia dopredu.
 
-**Ako vzorkuješ čas do ďalšej ponuky?** Príchod v kroku má pravdepodobnosť p₀ = Σ product_probs(0), takže čas do príchodu je geometrický: Δ = 1 + ⌊ln(1 − u) / ln(1 − p₀)⌋. Produkt sa vyberie úmerne pravdepodobnostiam a ak v danom kroku už nie je predajný, ponuka nevzniká. Test `test_offer_sampling_matches_demand` overuje, že priemerný počet ponúk sedí s modelom.
+**Ako vzorkuješ čas do ďalšej ponuky?** Príchod v kroku má pravdepodobnosť p₀ = Σ product_probs(0), takže čas do príchodu je geometrický: Δ = 1 + ⌊ln(1 − u) / ln(1 − p₀)⌋. Produkt sa vyberie úmerne pravdepodobnostiam a ak v danom kroku už nie je predajný, ponuka nevzniká. Na vetve `clen-c` to overoval test `test_offer_sampling_matches_demand`; v `main` ho po zjednotení testov už nemáme.
 
 **Čo znamená znovupoužitie stromu?** Uzly sú v slovníku podľa (krok, kapacita, produkt). Keď príde ďalšia skutočná požiadavka, jej stav už môže byť v strome s nazbieranými štatistikami. Uzly z minulých krokov mažeme, až keď je ich viac ako 300 000.
 
@@ -38,7 +38,7 @@ Moduly Člena C: `policies/vi.py`, `policies/mcts.py`, `policies/hybrid_mcts.py`
 
 ## Runner a metodológia
 
-**Ako je zaručená reprodukovateľnosť?** Inštancia aj náhodnosť politiky sú dané seedom, výsledok nezávisí od počtu procesov ani od delenia na skupiny (test). `results/run_meta.json` zaznamenáva verzie a parametre.
+**Ako je zaručená reprodukovateľnosť?** Inštancia aj náhodnosť politiky sú dané seedom, výsledok nezávisí od počtu procesov ani od delenia na skupiny. Prepočet na vetve `main` dal bajt po bajte rovnaké výsledky. `results/run_meta.json` zaznamenáva verzie a parametre.
 
 **Ako zabezpečuješ, že metóda nevidí test?** Flat rate, CMA-ES a grid search MCTS používajú len seedy 0–199. Testovacie seedy 1000–1099 slúžia len na finálne vyhodnotenie.
 
