@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-08T11:27:19",
+  "date": "2026-11-10T19:28:50+01:00",
   "experiments": [
     "e1",
     "e2",
@@ -51,7 +51,7 @@
     ],
     "mcts_offset": 50000
   },
-  "git": "84e3dad3f98613d0d620434a3efb250a750b6caf-dirty",
+  "git": "a258e1e1d5c501e6ea34480eead6648eb360c1cc",
   "versions": {
     "numpy": "2.4.6",
     "scipy": "1.17.1",
@@ -60,5 +60,5 @@
     "matplotlib": "3.11.2",
     "pyyaml": "6.0.3"
   },
-  "note": "durations_s je čas posledného behu. Pri prepočte 8. 11. po doplnení θ od Člena B sa z results/.cache načítali hotové úlohy a prepočítali sa len bidprice_tuned a hybrid_mcts; plný beh trval E1 ~859 s, E2 ~2490 s, E4 ~1462 s, mcts_grid ~1949 s (11 procesov)."
+  "note": "durations_s je čas posledného behu. Pri prepočte 8. 11. po doplnení θ od Člena B sa z results/.cache načítali hotové úlohy a prepočítali sa len bidprice_tuned a hybrid_mcts; plný beh trval E1 ~859 s, E2 ~2490 s, E4 ~1462 s, mcts_grid ~1949 s (11 procesov). Dňa 2026-11-10 bol celý reťazec spustený znova na commite a258e1e (vetva main); všetky úlohy sa načítali z cache a výsledky v results/ vyšli bajt po bajte rovnaké, preto durations_s ostáva z plného behu."
 }
