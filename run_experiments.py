@@ -1,5 +1,5 @@
-# Vytvorené s pomocou Claude, upravil: Martin Nový (Člen C)
-"""Jeden príkaz na všetky experimenty (úloha 5.1).
+
+"""Jeden príkaz na všetky experimenty.
 
     python run_experiments.py                          # grid MCTS, E1, E2, E4 + tabuľky a grafy
     python run_experiments.py --config config/e1.yaml  # jeden experiment podľa configu
