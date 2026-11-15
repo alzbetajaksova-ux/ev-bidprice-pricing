@@ -20,6 +20,7 @@ Bez `py` launchera stačí ľubovoľný Python 3.11, napríklad `uv venv --pytho
 pytest
 ruff check .
 ```
+python overenie/overenie.py   # kontroly stability z kap. 8 reportu (asi 15 min)
 
 Testy (`tests/test_core.py`) overujú len kľúčové vlastnosti: generátor a diskretizáciu, simulátor proti analytickému vzorcu, VI proti simulácii, LP hranicu, Oracle, politiky a tabuľky výsledkov. Trvajú do pol minúty.
 
@@ -87,6 +88,7 @@ Inštancie sa neukladajú na disk, rovnaká konfigurácia a seed dajú vždy rov
 | `results/` | výsledky experimentov, naladené θ (`params/`), tabuľky a grafy |
 | `report/Zadanie1_report_final.pdf` | záverečný report |
 | `report/nejasnosti_clanku.md` | podrobný zoznam nejasností článku a našich rozhodnutí (dopĺňa kapitolu 6 reportu) |
+| `overenie/` | kontroly stability: ďalšie seedy MCTS, všetkých 5 behov CMA-ES, MCTS s porovnateľným časom |
 
 ## Pôvod kódu, použitie AI a knižníc
 
