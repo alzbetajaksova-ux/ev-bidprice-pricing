@@ -1,5 +1,5 @@
-# Vytvorené s pomocou Claude, upravil: Alžbeta Jakšová (Člen A)
-"""Horná hranica očakávaných tržieb z LP na začiatku dňa (úloha 4.6)."""
+
+"""Horná hranica očakávaných tržieb z LP na začiatku dňa."""
 from __future__ import annotations
 
 import numpy as np
