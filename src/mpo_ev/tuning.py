@@ -1,5 +1,5 @@
-# Vytvorené s pomocou Claude, upravil: Člen B
-"""Ladenie parametrov θ bid-price politiky cez CMA-ES (úloha 4.4).
+
+"""Ladenie parametrov θ bid-price politiky cez CMA-ES.
 
 Úloha ladenia: max_θ  F(θ) = priemerné tržby BidPricePolicy(θ) na pevnej množine
 tréningových inštancií. Je spojitá, nízkodimenzionálna, s hranicami a black-box
