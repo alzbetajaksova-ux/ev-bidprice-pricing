@@ -1,8 +1,6 @@
-# Zoznam nejasností článku (úloha 2.4)
+# Zoznam nejasností článku 
 
-<!-- Vytvorené s pomocou Claude, upravil: Člen C -->
-
-Podklad pre sekcie 3, 6 a 10 reportu. Prvá časť preberá rozhodnutia Člena A o modeli (sekcia 3 a príloha na konci tohto súboru), druhá dopĺňa nejasnosti k metódam VI a MCTS, ktoré implementoval Člen C.
+Prvá časť preberá rozhodnutia o modeli (sekcia 3 a príloha na konci tohto súboru), druhá dopĺňa nejasnosti k metódam VI a MCTS.
 
 ## Model a inštancie
 
@@ -19,7 +17,7 @@ Podklad pre sekcie 3, 6 a 10 reportu. Prvá časť preberá rozhodnutia Člena A
 | 9 | VI pri 3 slotoch nižšie ako pri 2 aj 4 slotoch | pokles 2 → 3 sa reprodukuje, nárast pri 4 nie | naša VI: 40,97 / 36,32 / 36,17 | – |
 | 10 | b > a vs. b ≥ a | b > a | pri spojitom rozpočte bez vplyvu | žiadny |
 
-## Metódy VI a MCTS (Člen C)
+## Metódy VI a MCTS
 
 | # | Nejasnosť | Naša voľba | Opora | Možný dôsledok |
 | --- | --- | --- | --- | --- |
@@ -33,7 +31,7 @@ Podklad pre sekcie 3, 6 a 10 reportu. Prvá časť preberá rozhodnutia Člena A
 | 18 | Stav kapacity vo VI článku má c₀ⁿ hodnôt, správne je (c₀ + 1)ⁿ | (c₀ + 1)ⁿ, kapacita 0 až c₀ | počet hodnôt c_j ∈ {0, …, c₀} | iba opis v článku, výsledky neovplyvní |
 | 19 | Čas behu MCTS v Tab. 2 (Julia) nie je porovnateľný s Pythonom | porovnávame tržby pri pevnom počte iterácií a čas uvádzame zvlášť | – | časové údaje porovnávať len relatívne medzi našimi metódami |
 
-## Príloha: overenie modelu voči Tab. 2 (Člen A, 6. 11. 2026)
+## Príloha: overenie modelu voči Tab. 2 
 
 - *Pravidlo 2:* so začiatkom prvého slotu vychádzal strop tržieb (každý zákazník zaplatí celý rozpočet, bez kapacity) 27,22 pri 2 slotoch a 60,28 pri 4 slotoch, teda pod VI 48,18 a Oracle 67,45. S koncom prvého slotu je strop 95,53 a 101,90, rozpor zmizol.
 - *Pravidlo 5 potvrdené:* pri flat rate platí tržby = sadzba × vyťaženie na 4 miesta.
