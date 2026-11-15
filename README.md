@@ -85,7 +85,7 @@ Inštancie sa neukladajú na disk, rovnaká konfigurácia a seed dajú vždy rov
 | `requirements.txt` | závislosti s presnými verziami |
 | `tests/test_core.py` | základné automatické testy |
 | `results/` | výsledky experimentov, naladené θ (`params/`), tabuľky a grafy |
-| `report/Zadanie1_report.pdf` | záverečný report |
+| `report/Zadanie1_report_final.pdf` | záverečný report |
 | `report/nejasnosti_clanku.md` | podrobný zoznam nejasností článku a našich rozhodnutí (dopĺňa kapitolu 6 reportu) |
 | `report_for_us/` | interné podklady tímu (koncepty sekcií, príprava na obhajobu); nie sú súčasťou odovzdaného archívu |
 
