@@ -28,5 +28,5 @@ seeds:
   train: [0, 199]        # vrátane
   test: [1000, 1099]
   pilot: [1000, 1029]
-  cma_runs: [0, 9]
+  cma_runs: [0, 4]
   mcts_offset: 50000     # náhodnosť MCTS = seed inštancie + offset
