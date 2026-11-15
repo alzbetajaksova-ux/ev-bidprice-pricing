@@ -30,7 +30,7 @@
 
 **Prečo sa do `runtime_s` počíta aj `reset`?** Začiatočné LP je výpočet potrebný pre každú epizódu. Bez neho by bid-price vyzerala rýchlejšia, než je.
 
-**Ako je simulátor overený?** Tržby bez väzby kapacity sa zhodujú so vzorcom Σ_p Λ_p · q(p,a) · r(p,a). Politika z presnej DP dala v simulátore hodnotu zhodnú s DP. Testy navyše zachytili všetkých 16 chýb, ktoré sme do kópie kódu vložili zámerne. Konečnú kontrolu dá VI od C.
+**Ako je simulátor overený?** Tržby bez väzby kapacity sa zhodujú so vzorcom Σ_p Λ_p · q(p,a) · r(p,a). Politika z presnej DP dala v simulátore hodnotu zhodnú s DP. Testy navyše zachytili všetkých 16 chýb, ktoré sme do kópie kódu vložili zámerne. Nakoniec to potvrdila VI Člena C: jej politika dá v simulátore tržby zhodné s V₀ (`test_vi_policy_in_simulator_reaches_value`).
 
 **Prečo nezávislý test tržieb platí len bez väzby kapacity?** Vzorec predpokladá, že každý zákazník s dostatočným rozpočtom dostane produkt. Pri obmedzenej kapacite závisí predaj od poradia príchodov.
 
@@ -38,9 +38,9 @@
 
 **Prečo sa flat rate učí len na tréningových inštanciách?** Výber sadzby je tiež optimalizácia. Pri výbere na testovacích dátach by bol výsledok optimisticky skreslený.
 
-**Prečo je LP horná hranica online politík, ale nie Oracle?** Očakávané predaje každej online politiky spĺňajú obmedzenia LP, takže jej tržby sú najviac hodnota LP. Oracle pozná budúcnosť aj rozpočty, predá každému presne za jeho maximum, preto môže LP prekonať. Pri 4 slotoch dočasne vyšlo Oracle 54,13 a LP 43,82.
+**Prečo je LP horná hranica online politík, ale nie Oracle?** Očakávané predaje každej online politiky spĺňajú obmedzenia LP, takže jej tržby sú najviac hodnota LP. Oracle pozná budúcnosť aj rozpočty, predá každému presne za jeho maximum, preto môže LP prekonať. Pri 4 slotoch je Oracle 54,13 a LP 43,82.
 
-**Prečo má flat rate v našom modeli 94 % optima pri 4 slotoch?** Príčinu presne nepoznáme, v článku je to 85 %. Súvisí to s tým, že náš model sa od Tab. 2 líši, napríklad vyššou optimálnou sadzbou. Dôsledok je praktický: kritérium pilotu „≥ 93 % VI“ v našom modeli nič nerozlišuje, preto ho treba zmeniť.
+**Prečo má flat rate v našom modeli asi 92 % optima pri 4 slotoch?** Na testovacích inštanciách má flat 32,46 a VI 35,33, v článku je pomer 85 %. Príčinu presne nepoznáme, súvisí s tým, že náš model sa od Tab. 2 líši: je viac kapacitne obmedzený a optimálna sadzba je vyššia, takže jedna vysoká sadzba je blízko optima. Kritérium pilotu „≥ 93 % VI“ preto v našom modeli takmer nič nerozlišuje.
 
 **Čo ukázalo E4 pre flat rate?** Chyba λ ho takmer nezasiahne, lebo sadzba sa zvyčajne nezmení. Chybný priemer rozpočtu je horší, pokles je až 7,7 %, keďže flat zvolí zlú sadzbu. Zlepšenia sú v rámci šumu, žiadne nepresahuje dve štandardné chyby.
 

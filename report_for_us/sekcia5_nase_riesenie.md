@@ -33,7 +33,7 @@ s.t. Σ_a x(p,a)                    ≤ Λ_p     pre každý produkt p      (dop
 - Pre každý produkt ponecháme len sadzby na hornom konkávnom obale bodov (q, r·q) po sadzbu s najvyššou očakávanou tržbou. Ostatné sadzby nahradí zmes dvoch susedných, ktorá prinesie viac a spotrebuje menej kapacity. Pri 24 slotoch to zníži počet premenných z 5 339 na 3 653.
 - Očakávaný predaj produktu sa zavedie ako pomocná premenná s_p, takže kapacitné riadky obsahujú len s_p. Matica má asi desaťkrát menej nenulových prvkov.
 
-Riešenie trvá asi 0,04 s pri 24 slotoch a 0,8 s pri 72 slotoch (pôvodne 0,13 s a 6,3 s). Správnosť overujú testy (`tests/test_lp.py`): ručne vyrátané prípady, silná dualita, μ_j porovnané s konečnými diferenciami hodnoty LP a kontrolné hodnoty člena A.
+Riešenie trvá asi 0,04 s pri 24 slotoch a 0,8 s pri 72 slotoch (pôvodne 0,13 s a 6,3 s). Správnosť overujú testy v `tests/test_core.py`: orezanie sadzieb nemení hodnotu LP, duálne ceny sú nezáporné, hodnota LP je nad optimom VI a Oracle je na každej inštancii nad každou politikou.
 
 ## 5.2 Bid-price pravidlo
 
@@ -122,7 +122,7 @@ Zistenia:
 - **Stabilné sú len niektoré parametre.** α_am vychádza vo všetkých konfiguráciách 0,7–1,3, teda blízko α = 1 (μ z LP sú približne správne). Pri 4 a viac slotoch je γ = 1,5–2: politika funguje lepšie, keď LP počíta s vyšším dopytom, než je priemer, a teda cení sloty vyššie. Vysvetľujeme to tým, že fluidný LP nevidí náhodné kolísanie dopytu a hodnotu vzácnej kapacity v špičke podceňuje. Toto vysvetlenie je naša hypotéza, samostatne sme ho neoverovali.
 - **Kontrola na väčšej vzorke.** Pri 4 slotoch sme ladenie zopakovali s 200 tréningovými inštanciami (2 behy): predvolené θ 35,97, CMA-ES 36,75, náhodné hľadanie 36,79, flat rate 34,44. Zlepšenie sa zmenší z 5,7 % na 2,2 %. Hodnoty na 50 inštanciách sú teda čiastočne preučené a výber najlepšieho z piatich behov ich ďalej nadhodnocuje. Skutočný prínos ladenia preto posudzujeme až na testovacích inštanciách (sekcia 8).
 
-Konvergenciu najlepšej hodnoty podľa počtu vyhodnotení ukazuje Obr. 8.x (`results/figures/tuning_convergence.png`). Pri 4 slotoch a 200 inštanciách je CMA-ES blízko konečnej hodnoty už po 10 vyhodnoteniach (99–100 %), náhodné hľadanie sa k nej dostane po 20–40 vyhodnoteniach.
+Konvergenciu najlepšej hodnoty podľa počtu vyhodnotení ukazuje Obr. 8.8 (`results/figures/tuning_convergence.png`). Pri 4 slotoch a 200 inštanciách je CMA-ES blízko konečnej hodnoty už po 10 vyhodnoteniach (99–100 %), náhodné hľadanie sa k nej dostane po 20–40 vyhodnoteniach.
 
 ## 5.6 Hybrid MCTS a horná hranica
 
@@ -134,12 +134,12 @@ Konvergenciu najlepšej hodnoty podľa počtu vyhodnotení ukazuje Obr. 8.x (`re
 
 | Časť | Súbor | Testy | Online čas na deň |
 | --- | --- | --- | --- |
-| LP a vstupy | `src/mpo_ev/lp.py` | `tests/test_lp.py` | 0,04 s na jedno riešenie (24 slotov) |
-| Bid-price politika | `src/mpo_ev/policies/bidprice.py` | `tests/test_bidprice.py` | 0,2 s (bez prepočtu), 0,3 s (naladená), 24 slotov |
-| Ladenie θ | `src/mpo_ev/tuning.py` | `tests/test_tuning.py` | offline, 3–85 min na konfiguráciu |
-| Oracle (referencia) | `src/mpo_ev/policies/oracle.py` | `tests/test_oracle.py` | 0,02 s na inštanciu |
+| LP a vstupy | `src/mpo_ev/lp.py` | `test_lp_pruning_keeps_value_and_duals_are_valid` | 0,04 s na jedno riešenie (24 slotov) |
+| Bid-price politika | `src/mpo_ev/policies/bidprice.py` | `test_policy_is_valid_and_deterministic`, `test_bidprice_rejects_when_cost_exceeds_revenue` | 0,2 s (bez prepočtu), 1,25 s (naladená), 24 slotov |
+| Ladenie θ | `src/mpo_ev/tuning.py` | `test_cma_tuning_is_deterministic_and_within_bounds` | offline, 3–85 min na konfiguráciu |
+| Oracle (referencia) | `src/mpo_ev/policies/oracle.py` | `test_oracle_dominates_every_policy_on_every_instance` | 0,02 s na inštanciu |
 
-Výpočtová náročnosť politiky je daná počtom riešení LP, nie dĺžkou horizontu: jedno rozhodnutie bez prepočtu je výber z 19 sadzieb. Ladenie spustí `python -m mpo_ev.tuning --slots 24 --runs 5 --budget 60 --n-train 50 --jobs 2`, výstupy sú v `results/params/` a `results/tuning_<s>s.csv`. Pri rovnakom seede je ladenie reprodukovateľné. Výsledok nezávisí od počtu procesov (test `test_evaluator_fitness_deterministic_and_parallel_equal`).
+Výpočtová náročnosť politiky je daná počtom riešení LP, nie dĺžkou horizontu: jedno rozhodnutie bez prepočtu je výber z 19 sadzieb. Ladenie spustí `python -m mpo_ev.tuning --slots 24 --runs 5 --budget 60 --n-train 50 --jobs 2`, výstupy sú v `results/params/` a `results/tuning_<s>s.csv`. Pri rovnakom seede je ladenie reprodukovateľné. Výsledok nezávisí od počtu procesov, lebo F(θ) je deterministická.
 
 **Obmedzenia návrhu** (podrobnejšie v sekcii 11):
 - LP pracuje s priemerným dopytom, preto μ pri kapacite 3 hodnotu slotov iba aproximuje. Ladenie γ a α to len čiastočne koriguje.

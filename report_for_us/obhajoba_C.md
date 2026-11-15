@@ -8,9 +8,9 @@ Moduly Člena C: `policies/vi.py`, `policies/mcts.py`, `policies/hybrid_mcts.py`
 
 **Ako funguje naša VI?** Horizont je konečný, takže stačí jeden prechod spätnej indukcie od kroku K do 0. Pre každý krok t a kapacitu c počítame W_t(c), očakávané tržby od kroku t pred tým, než sa ukáže požiadavka. Pre produkt p je náklad príležitosti Δ = W_{t+1}(c) − W_{t+1}(c − 1_p) a najlepšia ponuka dá zisk max(0, max_a q(a)·(r(p,a) − Δ)). W_t(c) je W_{t+1}(c) plus tieto zisky vážené pravdepodobnosťami produktov.
 
-**Prečo zvládneme 8 slotov a článok len 4?** Článok ukladá stav (c, t, p), my produkt vystredíme a ukladáme len W_t(c). Pamäť je K·(c₀ + 1)ⁿ, pri 8 slotoch 192 · 65 536 hodnôt (asi 100 MB), výpočet trvá asi 50 s. Pri 9 slotoch už 4⁹ = 262 144 stavov na krok, preto je limit 70 000.
+**Prečo zvládneme 8 slotov a článok len 4?** Článok ukladá stav (c, t, p), my produkt vystredíme a ukladáme len W_t(c). Pamäť je K·(c₀ + 1)ⁿ, pri 8 slotoch 192 · 65 536 hodnôt (asi 100 MB), výpočet trvá asi 60 s. Pri 9 slotoch už 4⁹ = 262 144 stavov na krok, preto je limit 70 000.
 
-**Ako vieš, že VI je správna?** (1) V₀ sa presne zhoduje s nezávislou DP Člena A (40,97 / 36,32 / 36,17). (2) Na malej inštancii ju porovnávame s priamou rekurziou nad (t, c, p) podľa článku, zhoda na 10⁻¹⁰. (3) Simulované tržby politiky VI na 4000 inštanciách sú v rámci 4 SE od V₀. (4) V₀ ≤ LP hranica. (5) W klesá v čase a rastie s kapacitou.
+**Ako vieš, že VI je správna?** (1) V₀ sa presne zhoduje s nezávislou DP Člena A (40,97 / 36,32 / 36,17). (2) Simulované tržby politiky VI na 3000 inštanciách pri 2 slotoch sú v rámci 4 SE od V₀. (3) V₀ ≤ LP hranica. Tieto tri kontroly sú v `tests/test_core.py`. Na vetve `clen-c` sme navyše VI porovnali s priamou rekurziou nad (t, c, p) podľa článku (zhoda na 10⁻¹⁰) a overili, že W klesá v čase a rastie s kapacitou.
 
 **Prečo nie je VI z článku (48,18 / 43,88 / 46,23) rovnaká?** Náš model podľa Tab. 1 (dĺžka 3 h) je viac kapacitne obmedzený, Tab. 2 sa s ním reprodukovať nedá (nejasnosť 8). Porovnávame preto pomery, napr. flat/VI.
 
@@ -47,7 +47,6 @@ Moduly Člena C: `policies/vi.py`, `policies/mcts.py`, `policies/hybrid_mcts.py`
 **Prečo párový Wilcoxonov test?** Metódy bežia na rovnakých inštanciách, rozdiel na inštancii odstráni variabilitu dopytu. Rozdiely nemusia byť normálne rozdelené, Wilcoxon to nepredpokladá.
 
 **Čo by zmenil väčší výpočtový rozpočet?** Podľa grid searchu takmer nič: 10 000 iterácií dalo v priemere o 0,4 viac ako 3000 (v rámci šumu) za trojnásobný čas. Bid-price má pevný čas daný počtom riešení LP.
-
 
 **Prečo je E3 Člena B a nie váš grid search?** V pláne tímu je E3 prínos ladenia θ bid-price (úloha 5.4, Člen B). Grid search MCTS je úloha 3.8 a v runneri sa volá `mcts_grid`.
 

@@ -1,6 +1,6 @@
 # Príprava na obhajobu – Člen B (Adam Paľo)
 
-<!-- Vytvorené s pomocou Claude, upravil: Adam Paľo. Čísla podľa reportu MPO_Zadanie1_report.docx (vetva main). -->
+<!-- Vytvorené s pomocou Claude, upravil: Adam Paľo. Čísla podľa results/ a report_for_us/sekcia5, 8 a 9. -->
 
 Moja časť: **lineárny program a hodnoty slotov** (`lp.py`), **bid-price politika** (`policies/bidprice.py`), **Oracle** (`policies/oracle.py`), **ladenie θ cez CMA-ES** (`tuning.py`, experiment E3), sekcia 5 reportu.
 
@@ -74,7 +74,7 @@ Moja časť: **lineárny program a hodnoty slotov** (`lp.py`), **bid-price polit
 
 ## Otázky k Oracle
 
-**Čo je Oracle?** Binárny celočíselný program, ktorý pozná celý deň vrátane rozpočtov. Vyberie zákazníkov, ktorí sa zmestia do kapacity, a každému účtuje najvyššiu sadzbu z mriežky menšiu ako jeho rozpočet. Riešime ho cez `scipy.optimize.milp` (HiGHS), do 10 ms na deň.
+**Čo je Oracle?** Binárny celočíselný program, ktorý pozná celý deň vrátane rozpočtov. Vyberie zákazníkov, ktorí sa zmestia do kapacity, a každému účtuje najvyššiu sadzbu z mriežky menšiu ako jeho rozpočet. Riešime ho cez `scipy.optimize.milp` (HiGHS), asi 0,02 s na deň.
 
 **Prečo to nie je politika?** Lebo pozná budúcnosť. Je to nedosiahnuteľný strop, slúži na pomery (metóda / Oracle).
 

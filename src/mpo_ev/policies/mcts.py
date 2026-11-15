@@ -74,7 +74,6 @@ class MCTSPolicy:
         self._buf: list[float] = []
         self._pos = 0
         self._n_steps = config.n_steps
-        self._n_slots = config.n_slots
         self._demand = demand
         self._rates = list(config.price_grid) + [REJECT]
         self._n_actions = len(self._rates)

@@ -78,7 +78,7 @@ def seed_range(base: dict, name: str) -> range:
 def sessions_to_slots(
     start_h: np.ndarray, duration_h: np.ndarray, n_slots: int
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Prevedie nabíjania na prvý a posledný zasiahnutý slot (rozhodnutie 4 v report/sekcia3_podklady.md).
+    """Prevedie nabíjania na prvý a posledný zasiahnutý slot (report/nejasnosti_clanku.md, bod 3).
 
     Začiatok pred 0:00 sa posunie na 0:00, nabíjanie po polnoci sa oreže na posledný slot.
     """
@@ -101,7 +101,7 @@ def generate_instance(config: Config, seed: int) -> Instance:
     requests = tuple(
         Request(step, Product(f, l), budget)
         for step, f, l, budget in zip(
-            steps.tolist(), first.tolist(), last.tolist(), budgets.tolist()
+            steps.tolist(), first.tolist(), last.tolist(), budgets.tolist(), strict=True
         )
     )
     return Instance(config, requests, seed)

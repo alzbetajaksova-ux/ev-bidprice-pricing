@@ -11,7 +11,7 @@ Podklad pre sekcie 3, 6 a 10 reportu. Prvá časť preberá rozhodnutia Člena A
 | 1 | Mriežka cien A nie je uvedená | 19 kvantilov rozpočtu, q = 0,05 až 0,95 (0,178–1,822) + odmietnutie | podiel tržby/vyťaženie flat rate v Tab. 2 je presne F⁻¹(0,35) a F⁻¹(0,40) | jemnejšia mriežka zvyšuje tržby dynamických metód, overuje E4 (grid_0.10, grid_0.025) |
 | 2 | Koniec predaja T_p nie je definovaný | koniec prvého slotu produktu | Obr. 3: o 12:30 sa predáva slot 12:00–15:59 | so „začiatkom slotu“ by bol strop tržieb pod VI a Oracle článku |
 | 3 | Prevod nabíjania na sloty neuvedený | prvý a posledný zasiahnutý slot, orezanie na deň | vlastná voľba | dlhšie produkty než samotné nabíjanie |
-| 4 | Tab. 2: K = 24 × počet slotov, chyba Err₂/λ = 0,035–0,093, text tvrdí 0,06 | E1 podľa Tab. 2, E2 podľa chyby 0,06 | výpočet, `report/sekcia3_podklady.md` | E1 je porovnateľné s Tab. 2, nie s textom |
+| 4 | Tab. 2: K = 24 × počet slotov, chyba Err₂/λ = 0,035–0,093, text tvrdí 0,06 | E1 podľa Tab. 2, E2 podľa chyby 0,06 | výpočet (`instances.required_steps`), kapitola 6 reportu | E1 je porovnateľné s Tab. 2, nie s textom |
 | 5 | Text: 16–768 krokov | zodpovedá λ = 2 až 96 (λ = počet slotov), Tab. 2 má iné λ | výpočet | text a tabuľka opisujú iné nastavenie |
 | 6 | „240 slotov po 15 min“ | preklep, 15 min je 96 slotov | výpočet | žiadny |
 | 7 | „24 h nabíjania“ vs. rastúci Ø počet požiadaviek v Tab. 2 | λ podľa Tab. 2 | λ × dĺžka slotu = 24 h platí pre text, nie pre tabuľku | – |
@@ -47,8 +47,8 @@ Podklad pre sekcie 3, 6 a 10 reportu. Prvá časť preberá rozhodnutia Člena A
 | 24 | 0,40; 25,75; 44,07; 38,49 | 0,65; 8,3; 27,4; 32,6 |
 | 72 | 0,40; 43,84; 41,96; 36,64 | 0,70; 10,1; 28,1; 35,4 |
 
-- Pomery medzi metódami však sedia: na 100 testovacích inštanciách flat/Oracle 0,600 (4 sloty, článok 0,583), 0,615 (8; 0,596), 0,595 (12; 0,641), 0,588 (24; 0,665). Absolútne hodnoty a prínos dynamiky však nie: dočasná presná DP dala 40,97 / 36,32 / 36,17 pri 2 / 3 / 4 slotoch (VI v článku 48,18 / 43,88 / 46,23), LP 48,71 / 44,20 / 43,82, flat 39,67 / 34,10 / 33,97. Pokles pri 3 slotoch sa reprodukuje, nárast pri 4 slotoch nie. Flat/optimum je pri 4 slotoch 0,94, v článku 0,85, takže kritérium pilotu ≥ 93 % VI v našom modeli skoro nič nerozlišuje; B ho musí sprísniť.
-- Simulátor proti presnej DP: politika z DP na 8000 inštanciách 40,66 ± 0,76 / 36,11 ± 0,55 / 36,08 ± 0,48 (4 SE), zhoda s hodnotou DP. Kontrolu VI od C to nenahrádza.
+- Pomery medzi metódami však sedia: na 100 testovacích inštanciách flat/Oracle 0,600 (4 sloty, článok 0,583), 0,615 (8; 0,596), 0,595 (12; 0,641), 0,588 (24; 0,665). Absolútne hodnoty a prínos dynamiky však nie: dočasná presná DP dala 40,97 / 36,32 / 36,17 pri 2 / 3 / 4 slotoch (VI v článku 48,18 / 43,88 / 46,23), LP 48,71 / 44,20 / 43,82, flat 39,67 / 34,10 / 33,97. Pokles pri 3 slotoch sa reprodukuje, nárast pri 4 slotoch nie. Flat/optimum je pri 4 slotoch 0,94, v článku 0,85, takže kritérium pilotu ≥ 93 % VI v našom modeli skoro nič nerozlišuje.
+- Simulátor proti presnej DP: politika z DP na 8000 inštanciách 40,66 ± 0,76 / 36,11 ± 0,55 / 36,08 ± 0,48 (4 SE), zhoda s hodnotou DP. VI Člena C neskôr dala rovnaké V₀ a jej politika v simulátore rovnaké tržby (`tests/test_core.py`).
 - Priemer dĺžky 0,8 h nepomohol: pri 24 slotoch prijaté 13,6 (článok 25,75), flat 24,88 (38,49), Oracle 41,01 (57,91), flat/Oracle 0,607 (0,665).
 - Vypnutie expirácie to nevysvetľuje (rovnaké prijaté ≈ 12, q ≈ 0,8 pri 72 slotoch) a ani priemer 1/3 h alebo 1 h nesedí na prijaté aj vyťaženie súčasne (vyťaženie zostáva okolo 28–39 h).
 - Nepriame indície z Tab. 2 (hypotézy): prijatá rezervácia pri flat rate trvá ≈ dĺžka slotu + 0,6 h (0,96 h pri 72 slotoch) a λ · (dĺžka slotu + 0,79 h) ≈ 135–139 pri 8–72 slotoch. Dopyt teda vyzerá konštantný v hodinách produktov (preto Ø požiadaviek rastie so slotmi), ale pri kratších reláciách než 3 h a inej hodnote než „24 h nabíjania“ z textu.

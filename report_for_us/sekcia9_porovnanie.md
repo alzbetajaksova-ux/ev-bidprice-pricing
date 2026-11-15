@@ -2,7 +2,7 @@
 
 <!-- Vytvorené s pomocou Claude, upravil: Člen C. Čísla z results/e1_summary.csv (finálny beh). -->
 
-Absolútne tržby s článkom porovnať nemožno: rozdelenia z Tab. 1 (dĺžka rezervácie s priemerom 3 h) dávajú výrazne viac kapacitne obmedzený model, než aký zodpovedá Tab. 2 (nejasnosť 8 v `report/nejasnosti_2_4.md`). Mriežku cien sme z Tab. 2 odvodili (flat sadzby článku sú presne F⁻¹(0,35) a F⁻¹(0,40)), preto ju ako hlavný dôvod rozdielov neuvádzame a jej vplyv overuje E4. Porovnávame **pomery k Oracle a k flat rate** na tých istých inštanciách a **poradie metód**.
+Absolútne tržby s článkom porovnať nemožno: rozdelenia z Tab. 1 (dĺžka rezervácie s priemerom 3 h) dávajú výrazne viac kapacitne obmedzený model, než aký zodpovedá Tab. 2 (nejasnosť 8 v `report/nejasnosti_clanku.md`). Mriežku cien sme z Tab. 2 odvodili (flat sadzby článku sú presne F⁻¹(0,35) a F⁻¹(0,40)), preto ju ako hlavný dôvod rozdielov neuvádzame a jej vplyv overuje E4. Porovnávame **pomery k Oracle a k flat rate** na tých istých inštanciách a **poradie metód**.
 
 **Tabuľka 9.1.** Pomer priemerných tržieb k Oracle, 100 testovacích inštancií. Článok: Tab. 2 (Oracle len pre 4 a viac slotov).
 
@@ -55,7 +55,7 @@ Výskumná otázka „dosiahne rýchla politika založená na hodnote slotov tr�
 
 ## Možné zdroje rozdielov
 
-1. **Model dopytu (Tab. 1 vs. Tab. 2).** Hlavný a nevysvetlený rozdiel, ovplyvní absolútne čísla aj veľkosť prínosu dynamiky. Podrobne v sekcii 3 a v prílohe `report/nejasnosti_2_4.md`.
+1. **Model dopytu (Tab. 1 vs. Tab. 2).** Hlavný a nevysvetlený rozdiel, ovplyvní absolútne čísla aj veľkosť prínosu dynamiky. Podrobne v sekcii 3 a v prílohe `report/nejasnosti_clanku.md`.
 2. **Parametre MCTS.** Používame 3000 iterácií namiesto 10 000. Podľa nášho grid searchu pridá 10 000 iterácií v priemere asi 0,4 jednotky (v rámci šumu) za trojnásobný čas, takže tento rozdiel výsledky podstatne nemení.
 3. **Štruktúra stromu.** Náš strom obsahuje len rozhodovacie stavy (nejasnosť 12), implementácia autorov v POMDPs.jl pravdepodobne aj prázdne kroky. Pri rovnakom d_max tak náš strom vidí ďalej.
 4. **Mriežka cien.** Odvodili sme ju z Tab. 2 (krok kvantilov 0,05 je náš predpoklad). E4 ukazuje, že krok 0,10 alebo 0,025 mení tržby flat a bid-price najviac o 2,4 %.

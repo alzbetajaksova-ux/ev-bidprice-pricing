@@ -283,7 +283,7 @@ def plot_e2(summary: pd.DataFrame, bounds: pd.DataFrame | None, out: Path) -> No
     plt.close(fig)
 
 
-# --- grid search MCTS (úloha 3.8) -------------------------------------------------------------------------------
+# --- grid search MCTS (úloha 3.8) -----------------------------------------------------
 
 def plot_grid(grid: pd.DataFrame, out: Path) -> None:
     refs = grid[grid["n_iter"].isna() & (grid["method"] != "oracle")]

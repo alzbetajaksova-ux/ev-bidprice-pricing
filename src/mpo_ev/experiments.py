@@ -46,7 +46,14 @@ from mpo_ev.evaluation import (
     save_rows,
     true_config,
 )
-from mpo_ev.instances import generate_instances, load_base, make_config, required_steps, seed_range
+from mpo_ev.instances import (
+    generate_instance,
+    generate_instances,
+    load_base,
+    make_config,
+    required_steps,
+    seed_range,
+)
 from mpo_ev.interfaces import Config, DemandModel, Policy
 from mpo_ev.paths import CONFIG_DIR, RESULTS, ROOT
 from mpo_ev.policies.bidprice import BidPricePolicy
@@ -169,7 +176,7 @@ def _demand(config: Config, base: dict) -> DemandModel:
 def run_task(task: Task, base: dict) -> TaskResult:
     scenario = task.scenario or Scenario("nominal")
     truth = true_config(task.config, scenario)
-    instances = [generate_instances(truth, range(s, s + 1))[0] for s in task.seeds]
+    instances = [generate_instance(truth, s) for s in task.seeds]
     if task.method == "oracle":
         return TaskResult(evaluate_oracle(instances, base, task.experiment, task.label))
     believed = believed_config(truth, scenario)
@@ -376,8 +383,8 @@ def summarize(rows: list[dict], bounds: pd.DataFrame | None = None) -> pd.DataFr
         table = table.merge(bounds[["config_id", "lp_bound", "vi_value"]], on="config_id",
                             how="left")
         table["ratio_lp"] = table["mean"] / table["lp_bound"]
-        table["gap_lp_pct"] = [gap_to_bound(m, b) for m, b in zip(table["mean"],
-                                                                     table["lp_bound"])]
+        table["gap_lp_pct"] = [gap_to_bound(m, b)
+                               for m, b in zip(table["mean"], table["lp_bound"], strict=True)]
         table["ratio_vi"] = table["mean"] / table["vi_value"]
     return table
 
@@ -471,7 +478,7 @@ def e4(base: dict, settings: Settings, spec: dict | None = None) -> pd.DataFrame
     spec = spec or load_yaml("e4.yaml")
     items = spec["configurations"][:2] if settings.quick else spec["configurations"]
     scenarios = [Scenario(**s) for s in spec["scenarios"]]
-    methods = spec.get("methods", ["flat", "bidprice", "mcts", "hybrid_mcts"])
+    methods = spec["methods"]
     params = settings.mcts_params()
     tasks = []
     for item in items:
@@ -511,7 +518,7 @@ def git_revision() -> str:
     return commit + ("-dirty" if dirty else "")
 
 
-def write_meta(settings: Settings, names: Sequence[str], durations: dict[str, float]) -> None:
+def write_meta(settings: Settings, durations: dict[str, float]) -> None:
     import cma
     import matplotlib
     import scipy
@@ -548,7 +555,7 @@ def run(names: Sequence[str], settings: Settings, specs: dict[str, dict] | None 
         with pd.option_context("display.width", 200, "display.max_columns", 30):
             print(table.round(3).to_string(index=False))
         print(f"{name} hotové za {durations[name]:.0f} s\n")
-    write_meta(settings, names, durations)
+    write_meta(settings, durations)
     from mpo_ev.analysis import analyze
 
     print(f"tabuľky a grafy: {analyze(settings.out_dir)}")

@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from mpo_ev.interfaces import REJECT, Config, DemandModel
+from mpo_ev.interfaces import Config, DemandModel
 from mpo_ev.policies.bidprice import BidPricePolicy
 from mpo_ev.policies.mcts import MCTSPolicy
 
@@ -53,7 +53,7 @@ class HybridMCTSPolicy(MCTSPolicy):
         row = []
         for alpha in self._bidprice.alphas:
             rate = self._bidprice.best_rate(p, float(alpha) * load)
-            row.append(self._action_of[rate] if rate != REJECT else self._n_actions - 1)
+            row.append(self._action_of[rate])  # REJECT je posledná akcia v self._rates
         self._table.append(row)
 
     def _rollout_action(self, step: int, j: int) -> int:

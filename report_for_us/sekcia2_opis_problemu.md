@@ -12,4 +12,4 @@ Problém má štruktúru sieťového revenue managementu, známeho z predaja let
 
 Na tieto medzery nadväzuje naše riešenie.
 
-Zdroje: Mrkos, Komenda, Fiedler, Vokřínek, *Online Dynamic Pricing for Electric Vehicle Charging Stations with Reservations*, IEEE Transactions on Intelligent Transportation Systems (preprint arXiv 2410.05538); Talluri, van Ryzin, *The Theory and Practice of Revenue Management* \[overiť kapitoly pred citáciou\].
+Zdroje: Mrkos, Komenda, Fiedler, Vokřínek, *Online Dynamic Pricing for Electric Vehicle Charging Stations with Reservations*, IEEE Transactions on Intelligent Transportation Systems (preprint arXiv 2410.05538); Talluri, van Ryzin, *The Theory and Practice of Revenue Management*, Springer, 2004, kap. 3 (sieťové riadenie kapacity) a 5 (dynamické oceňovanie).

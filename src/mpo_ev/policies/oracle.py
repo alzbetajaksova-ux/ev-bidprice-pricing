@@ -28,6 +28,7 @@ import numpy as np
 from scipy.optimize import Bounds, LinearConstraint, milp
 from scipy.sparse import coo_matrix
 
+from mpo_ev.evaluation import result_row
 from mpo_ev.interfaces import EpisodeResult, Instance, Request
 
 METHOD = "oracle"
@@ -92,8 +93,6 @@ def evaluate_oracle(
     instances: Sequence[Instance], base: dict, experiment: str, config_id: str
 ) -> list[dict]:
     """Riadky v rovnakom formáte CSV ako `evaluation.evaluate_policy`."""
-    from mpo_ev.evaluation import result_row
-
     offset = base["seeds"]["mcts_offset"]
     return [
         result_row(experiment, config_id, METHOD, i.seed, i.seed + offset, oracle_episode(i))
