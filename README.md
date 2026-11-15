@@ -30,11 +30,11 @@ python run_experiments.py --quick                   # kontrola celého reťazca,
 python run_experiments.py                           # grid search MCTS, E1, E2, E4 + tabuľky a grafy
 python run_experiments.py --config config/e1.yaml   # jeden experiment podľa configu
 python run_experiments.py e1 e2 --jobs 8            # vybrané experimenty, počet procesov
-python run_experiments.py --tune e1                 # najprv ladenie θ cez CMA-ES (E3 Člena B), veľmi dlhé
+python run_experiments.py --tune e1                 # najprv ladenie θ cez CMA-ES, veľmi dlhé
 python run_experiments.py --fresh e1                # prepočítať aj hotové úlohy
 ```
 
-Experimenty: `mcts_grid` (úloha 3.8, `config/mcts_grid.yaml`), `e1` (dĺžka slotu), `e2` (hustota dopytu), `e4` (robustnosť). E3 (prínos ladenia θ) sa spúšťa zvlášť pre každý počet slotov, s rozpočtom z `config/tuning.yaml`:
+Experimenty: `mcts_grid` ( `config/mcts_grid.yaml`), `e1` (dĺžka slotu), `e2` (hustota dopytu), `e4` (robustnosť). E3 (prínos ladenia θ) sa spúšťa zvlášť pre každý počet slotov, s rozpočtom z `config/tuning.yaml`:
 
 ```powershell
 $env:PYTHONPATH = "src"
@@ -45,7 +45,7 @@ Výsledky ladenia sú v `results/params/` a `results/tuning_<s>s.csv`. Ladenie p
 
 Výstupy: `results/<exp>.csv` (riadok = metóda × inštancia), `results/<exp>_summary.csv` (štatistiky, pomery k Oracle, LP hranici a flat rate), `results/<exp>_bounds.csv` (LP hranica, hodnota VI), `results/<exp>_offline.csv` (offline čas prípravy), `results/run_meta.json` (verzie knižníc, git hash, seedy, parametre MCTS), `results/params/*.json` (naladené θ z každého behu ladenia), `results/tuning_<s>s.csv` (priebeh ladenia pre graf konvergencie), `results/tables.md` a `results/figures/*.png`. Tabuľky a grafy vytvorí znova z CSV `python -m mpo_ev.analysis` (s `PYTHONPATH=src`) alebo notebook `analysis.ipynb` (potrebuje navyše `pip install notebook`).
 
-`bidprice_tuned` sa vyhodnotí, len ak existujú naladené parametre `results/params/<config>_cma_seed*.json` (úloha 4.4, `python -m mpo_ev.tuning` alebo `--tune`), inak ho runner vynechá s upozornením.
+`bidprice_tuned` sa vyhodnotí, len ak existujú naladené parametre `results/params/<config>_cma_seed*.json` (`python -m mpo_ev.tuning` alebo `--tune`), inak ho runner vynechá s upozornením.
 
 ## Použitie
 
@@ -87,7 +87,6 @@ Inštancie sa neukladajú na disk, rovnaká konfigurácia a seed dajú vždy rov
 | `results/` | výsledky experimentov, naladené θ (`params/`), tabuľky a grafy |
 | `report/Zadanie1_report_final.pdf` | záverečný report |
 | `report/nejasnosti_clanku.md` | podrobný zoznam nejasností článku a našich rozhodnutí (dopĺňa kapitolu 6 reportu) |
-| `report_for_us/` | interné podklady tímu (koncepty sekcií, príprava na obhajobu); nie sú súčasťou odovzdaného archívu |
 
 ## Pôvod kódu, použitie AI a knižníc
 
