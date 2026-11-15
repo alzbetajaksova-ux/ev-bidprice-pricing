@@ -15,5 +15,5 @@ configurations:
 # oracle a LP hranica nie sú politiky, runner ich počíta vždy
 methods: [flat, vi, bidprice, bidprice_tuned, mcts, hybrid_mcts]
 vi_max_slots: 8          # článok: VI len do 4 slotov; naša VI bez produktu v stave zvládne 8
-mcts_max_slots: 24       # znížený rozsah schválený vyučujúcim (Python je pomalší než Julia)
+mcts_max_slots: 24       # znížený rozsah (Python je pomalší než Julia)
 mcts_test_instances: 100 # počet testovacích inštancií pre MCTS a hybrid (prvé z test seedov)
