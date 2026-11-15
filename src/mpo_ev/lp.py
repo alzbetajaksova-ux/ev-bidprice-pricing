@@ -1,5 +1,5 @@
-# Vytvorené s pomocou Claude, upravil: Člen B
-"""Deterministický LP pre oceňovanie a duálne ceny slotov (úlohy 4.1 a 4.2).
+
+"""Deterministický LP pre oceňovanie a duálne ceny slotov.
 
 Fluidná (deterministická) relaxácia viacproduktového dynamického oceňovania,
 pozri Gallego a van Ryzin (1997) a Talluri a van Ryzin (2004), kap. 3 a 5:
